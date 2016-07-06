@@ -66,19 +66,6 @@ def none_remover(x):
     print "%d entries were not found." % (none_c)
         
     return n
-def tblsort(x):#top level sorter
-    #section that contains the tables
-    if x == None:
-        return ['None']
-    if x.find('td') == None:
-        return ['None']
-    table = x.find('td')
-    l = []
-    for i in range(0, len(x.find_all('td'))):
-        l.append(tr_list(table))
-        #l.append(table)
-        table = table.findNext('table')
-    return l
         
         
     
@@ -119,19 +106,6 @@ def encoder(x):#takes text from bsObject tag(s) and converts into unicode-free s
         print 'ASCII'
         return h
 
-def tr_list(x):#takes table returns list
-    l = []
-    rows = x.find('tr')#changed from 'tr')
-    print table
-    for i in range(0, (len(x.find_all('tr')))):
-        if rows == None:
-            l = dup_erase(l)
-            return l
-        else:
-            l.append((encoder(rows.text).translate(None,'\n''\t')).strip(' '))
-            rows = rows.findNext('tr')
-    l = dup_erase(l)
-    return l
 
 def dup_erase(x):#accepts list, returns a list that does not containt any elements in the "bad" list
     l_1 = []
@@ -145,8 +119,6 @@ def thtd(x):
     l = []
     d ={}
     bsObject = x
-    #if bsObject.find_all('td') or bsObject.find_all('th') == None:
-        #return None
     headers = bsObject.find_all('th')
     for i in range(0, len(headers)):
         #head, cell = headers[i], headers.find('td')
@@ -155,10 +127,6 @@ def thtd(x):
                 d[encoder(headers[i].text).translate(None, '\n')] = encoder(headers[i].next_sibling.text).translate(None, '\n')
             except AttributeError as AE:
                 d[encoder(headers[i].text).translate(None, '\n')] = "None"
-                
-        '''else:
-            d[encoder(headers[i].text).translate(None, '\n')] = "None"'''
-        #l.append(head,cel
     print(d)
     return d_sort(d)#creates a list from dictionary and then removes non-list elements
         
