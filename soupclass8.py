@@ -16,6 +16,7 @@ from dir_man import *
 -ASIN Grabber now works but only returns 4 results max
 2/23/2016
 -Added listify function in order to assist with command line processing
+
 3/1/2016
 -Added spacesmash to S_format class
 
