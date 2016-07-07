@@ -1010,10 +1010,12 @@ def text_wc(x,output='listoutput.txt', v = 0):#takes list writes to text
         for i in range(0, len(n_l)):
             if v != 0:
                 print(n_l[i])
-                wf.writelines(n_l[i]+ "\n")
+                new = n_l[i]+ "\n"
+                wf.writelines(new)
 
-            else: 
-                wf.writelines(n_l[i]+ "\n")
+            else:
+                new = n_l[i]+ "\n"
+                wf.writelines(new)
     return "Complete"
 
 def text_l(x):#reads text file, returns list of elements
@@ -1046,12 +1048,13 @@ def image_d(x,n,ext, mode = 'wb'):
     return 'Done with %s' % (x)
 
 def w_csv(x,output='FCfile.csv'):#accepts lists of other lists, spits out CSV file
-    csv_out = open(output, 'wb')
+    csv_out = open(output, 'w', newline='', encoding='utf-8')
     mywriter = csv.writer(csv_out)
     print("This is x: %s" % (x))
     mywriter.writerows(x)
     csv_out.close()
     return
+    
 def space_norm(x):
     l = x
     for i in range(0, len(l)):
