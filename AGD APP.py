@@ -2,7 +2,19 @@ from soupclass8 import *
 
 
 #AGD scraper (example: https://retailerservices.alliance-games.com/Login/Login?ReturnUrl=%2f)
+
 from AGD1 import *
+
+browser = webdriver.Firefox()
+browser.get('https://retailerservices.alliance-games.com/Login/Login?ReturnUrl=%2f')
+username = input("Username: ")
+password = input("Password: ")
+element = browser.find_element_by_id('UserName')
+element1 = browser.find_element_by_id('Password')
+submission = browser.find_element_by_id('Submit')
+element.send_keys(username)
+element1.send_keys(password)
+submission.click()
 
 
 def item_search_category(category,wait=5):
