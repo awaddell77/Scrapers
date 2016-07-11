@@ -1,4 +1,4 @@
-from soupclass7 import *
+from soupclass8 import *
 
 
 #AGD scraper (example: https://retailerservices.alliance-games.com/Login/Login?ReturnUrl=%2f)
