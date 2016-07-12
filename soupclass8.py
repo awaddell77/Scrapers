@@ -1004,9 +1004,10 @@ def listify(x1):
                 x[i] = [x[i]]
     return x
 
-def text_wc(x,output='listoutput.txt', v = 0):#takes list writes to text
+def text_wc(x,output='listoutput.txt', directory = 'C:\\Users\\Owner\\', v = 0):#takes list writes to text
     n_l = x
-    with open(output, 'w') as wf:
+    name = directory + output
+    with open(name, 'w') as wf:
         for i in range(0, len(n_l)):
             if v != 0:
                 print(n_l[i])
@@ -1018,7 +1019,7 @@ def text_wc(x,output='listoutput.txt', v = 0):#takes list writes to text
                 wf.writelines(new)
     return "Complete"
 
-def text_l(x):#reads text file, returns list of elements
+def text_l(x, mode='utf-8'):#reads text file, returns list of elements
     words = ''
     l = []
     with open(x, 'r') as f:
@@ -1054,7 +1055,7 @@ def w_csv(x,output='FCfile.csv'):#accepts lists of other lists, spits out CSV fi
     mywriter.writerows(x)
     csv_out.close()
     return
-    
+
 def space_norm(x):
     l = x
     for i in range(0, len(l)):
