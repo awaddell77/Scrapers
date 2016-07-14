@@ -113,10 +113,12 @@ class S_base(object):
             browser.execute_script("window.scrollTo(0,10)")
         if wait != 0:
             browser.implicitly_wait(wait)
+
         html = browser.page_source
         browser.quit()
         bsObject = bs(html, 'lxml')
         return bsObject
+
 
     def soup_target(self):
         if self.tag2 == 0 or self.tag3 == 0:
@@ -641,7 +643,7 @@ class C_sort(object):#for processing CSVs
             columns.append(new_col)
         return columns
     def row_grab(self, n):
-        h = self.contents()
+        h = self.contents
         return h[n]
                     
 
@@ -1017,7 +1019,8 @@ def text_wc(x,output='listoutput.txt', directory = 'C:\\Users\\Owner\\', v = 0):
             else:
                 new = n_l[i]+ "\n"
                 wf.writelines(new)
-    return "Complete"
+    print("%s saved to %s" % (output, directory))
+    return True
 
 def text_l(x, mode='utf-8'):#reads text file, returns list of elements
     words = ''

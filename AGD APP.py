@@ -42,8 +42,6 @@ def test(x,wait=5):
 	results = result_grab(1)
 	return results
 
-
-
 def result_grab(x):
 	links = []
 
