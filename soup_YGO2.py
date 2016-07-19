@@ -79,10 +79,6 @@ def soupmaker(x):#makes the soup
     return bsObject
 
 def sfind(x, effect = 0):#isolates the parent tag that contains the tables
-    #url = x
-    #url = requests.get(url)
-    #url = url.content
-    #bsObject = bs(url, 'lxml')
     bsObject = x
     if bsObject.find('table',{'class':'cardtable'}) == None and bsObject.find('table', {'class':'navbox hlist'}) == None:
     	return 'The page is not up.'
