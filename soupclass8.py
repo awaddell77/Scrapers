@@ -68,6 +68,8 @@ class S_base(object):
         html = html.content
         bsObject = bs(html, 'lxml')
         return bsObject
+
+        
     def soupmaker_catch(self, T_O = 1.500):#T_O is the amount of time in seconds requests will wait for a response
         try:
             html = requests.get(self.url, timeout= T_O)
@@ -323,15 +325,6 @@ class AmazonS(object):# new class because amazon is unique
     
             
         
-    
-
-        
-    
-        
-'''class S_SysCom(object):
-    def __init__(self, command1, command)'''
-            
-        
 class S_upc(object):#this class contains functions that grab the UPC code for a given item
     def __init__(self, title):
         self.title = title
@@ -519,33 +512,18 @@ class S_table(object):
             else:
                 l.append(bs('None Found','lxml'))#The string is converted to a bsObject for parsing purposes
         return l    
-            
 
-    def item_parent(self, s,  n=3):#default "depth" (n) value is based the "depth" of wiki tables
-        bsObject = self.table
-        item = bsObject.find(string=re.compile(s))
-        if item == None:
-            return False
+    def table_find(self, item, t_tag = 'table', limit=40):
+        n = 0
+
+        while item.name != t_tag and n != limit:
+            item = self.p_find(item) #using recursion to find target parent
+            n += 1
+        if item.name == t_tag:
+            print("Found target parent.")
+            return item
         else:
-            for i in range(0, n):
-                item = p_find(item)
-        return item
-            
-    def test(self, s, n=3):
-        pars = []#parents will be stored here
-        bsObject = self.table
-        item = bsObject.find(string=re.compile(s))
-        if item == None:
-            return False
-        else:
-            for i in item.find_parents(limit=40):
-                pars.append(i)
-            for i in range(0, len(pars)):
-                if pars[i].find(string=re.compile(s), recursive= False) == None:
-                    print('Element found')
-                    return pars[i]
-            return 'Failed to locate parent'
-        
+            return "Could not find parent with the target tag %s" % t_tag
 
                 
         

@@ -14,11 +14,13 @@ import csv
 def main(x):#batch
     
     urls  = text_l(x)
-    t_results = [['ATK/DEF','Name','Monster Type','Card Type', 'Passcode', 'Level','Attribute','Card Text','Set']]
+    t_results = [['Name', 'ATK/DEF', 'Monster Type','Card Type', 'Passcode', 'Level','Attribute','Card Text','Set']]
     for i in range(0, len(urls)):
         bsObject = soupmaker(urls[i])
         a_table = sfind(bsObject)
-        if len(a_table) == 2:
+        if a_table == 'The page is not up.':
+        	t_results.append([a_table])
+        elif len(a_table) == 2:
             b_rows = thtd(a_table[0])
             b_rows.append(encoder(a_table[1].text).translate(None, '\n'))
             t_results.append(b_rows)
@@ -82,6 +84,8 @@ def sfind(x, effect = 0):#isolates the parent tag that contains the tables
     #url = url.content
     #bsObject = bs(url, 'lxml')
     bsObject = x
+    if bsObject.find('table',{'class':'cardtable'}) == None and bsObject.find('table', {'class':'navbox hlist'}) == None:
+    	return 'The page is not up.'
     table = bsObject.find('table',{'class':'cardtable'})
     table2 = bsObject.find('table', {'class':'navbox hlist'})#the english description
     if table2 == None:
