@@ -1,7 +1,7 @@
-import urllib, urllib2, lxml, requests
+import lxml, requests
 from bs4 import BeautifulSoup as bs
 import csv
-from soupclass7 import *
+from soupclass8 import *
  
 '''NOTES: 2/10/2016
 -
@@ -66,7 +66,7 @@ def main(x):#batch
 
 
     w_csv(t_results)
-    print t_results
+    print(t_results)
     return "Complete"
 
 def main_s(x): #singles
@@ -103,7 +103,7 @@ def none_remover(x):
         if n[i] == None:
             n[i] = [["Number %d was not found" % (i)]]
             none_c = none_c + 1
-    print "%d entries were not found." % (none_c)
+    print("%d entries were not found." % (none_c))
         
     return n
 def tblsort(x):#top level sorter
@@ -155,14 +155,14 @@ def encoder(x):#takes text from bsObject tag(s) and converts into unicode-free s
         #print 'Tried to encode' #for testing
     except UnicodeEncodeError as U:
         h = h.encode('utf-8', 'ignore')
-        print 'UTF-8'
+        print('UTF-8')
         return h
     except AttributeError as E:
-        print E
+        print(E)
         return x
     else:
         h = x.encode('ascii', 'ignore')
-        print 'ASCII'
+        print('ASCII')
         return h
 
 
@@ -190,11 +190,10 @@ def td(x, custom='NA'):#TO BE DONE: FIND ALL td from the main table and then jus
             try:
                 d[encoder(table_c[i].text).translate(None, '\n').strip(' ')] = encoder(table_c[i + 1].text).translate(None, '\n').strip(' ')
             except IndexError as IE:
-                print d
+                print(d)
                 return d_sort(d)
                 
-           #l.append(encoder(table_c[i].text).translate(None, '\n').strip(' '))
-    print d
+    print(d)
     return d_sort(d)
     #return (l_maker(d_sort(d)))
 
@@ -278,8 +277,8 @@ def text_l(x):
         
         
         
-def w_csv(x):#accepts lists of other lists, spits out CSV file
-    csv_out = open('FCfile.csv', 'wb')
+def w_csv(x,output='FCfile.csv'):#accepts lists of other lists, spits out CSV file
+    csv_out = open(output, 'wb')
     mywriter = csv.writer(csv_out)
     print "This is x: %s" % (x)
     mywriter.writerows(x)
@@ -312,42 +311,7 @@ def linkf(x):#takes link tag (MUST BE STRING) and extracts the link
     #ln = b_url + ln #MAJOR WORKAROUND!!!! IN THE FUTURE THS SHOULD CALL A FUNCTION THAT FINDS THE BASE
     return ln
 
-def link_s(x):#scrapes links
-    page = soupmaker(x)
-    links = page.find_all('a')
-    l = []
-    bad_l = ['http://buddyfight.wikia.com/wiki/Ancient_World', 'http://buddyfight.wikia.com/wiki/Danger_World',
-             'http://buddyfight.wikia.com/wiki/Darkness_Dragon_World','http://buddyfight.wikia.com/wiki/Dragon_World',
-             'http://buddyfight.wikia.com/wiki/Dungeon_World', 'http://buddyfight.wikia.com/wiki/Hero_World',
-             'http://buddyfight.wikia.com/wiki/Katana_World', 'http://buddyfight.wikia.com/wiki/Legend_World',
-             'http://buddyfight.wikia.com/wiki/Magic_World', 'http://buddyfight.wikia.com/wiki/Star_Dragon_World',
-             'http://buddyfight.wikia.com/wiki/Monster', 'http://buddyfight.wikia.com/wiki/Flag',
-             'http://buddyfight.wikia.com/wiki/Spell', 'http://buddyfight.wikia.com/wiki/Impact',
-             'http://buddyfight.wikia.com/wiki/Item', 'http://buddyfight.wikia.com/wiki/SetList:BFE-H-BT04?action=edit', '']
-    for i in range(0, len(links)):
-        link1 = linkf(str(links[i]))
-        if link1 not in bad_l:
-            l.append(link1)
-    return l
-        
-def link_st(x):#scrapes links
-    page = soupmaker(x)
-    table = page.find('table') #{'class':'wikitable sortable jquery-tablesorter'})
-    links = page.find_all('a')
-    l = []
-    bad_l = ['http://buddyfight.wikia.com/wiki/Ancient_World', 'http://buddyfight.wikia.com/wiki/Danger_World',
-             'http://buddyfight.wikia.com/wiki/Darkness_Dragon_World','http://buddyfight.wikia.com/wiki/Dragon_World',
-             'http://buddyfight.wikia.com/wiki/Dungeon_World', 'http://buddyfight.wikia.com/wiki/Hero_World',
-             'http://buddyfight.wikia.com/wiki/Katana_World', 'http://buddyfight.wikia.com/wiki/Legend_World',
-             'http://buddyfight.wikia.com/wiki/Magic_World', 'http://buddyfight.wikia.com/wiki/Star_Dragon_World',
-             'http://buddyfight.wikia.com/wiki/Monster', 'http://buddyfight.wikia.com/wiki/Flag',
-             'http://buddyfight.wikia.com/wiki/Spell', 'http://buddyfight.wikia.com/wiki/Impact',
-             'http://buddyfight.wikia.com/wiki/Item', 'http://buddyfight.wikia.com/wiki/SetList:BFE-H-BT04?action=edit', '']
-    for i in range(0, len(links)):
-        link1 = linkf(str(links[i]))
-        if link1 not in bad_l:
-            l.append(link1)
-    return l        
+
 
 
 def images(x):
@@ -360,3 +324,22 @@ def images(x):
         results.append(link)
     return results
 
+def main_gallery(x):
+	site = S_base(x).soupmaker()
+	r_links = site.find_all('div', {'class':'lightbox-caption'})
+	new = [(r_links[i].text, 'http://cardfight.wikia.com' + S_format(str(r_links[i].a)).linkf('<a href=')) for i in range(0, len(r_links))]
+	#new will be a list of tuples containing the card number and then link to the card
+	link_write(new)
+	return new
+
+def link_write(x):
+	links = [x[i][1] for i in range(0, len(x))]
+	text_wc(links)
+	numbers = [(joiner(x[i][0].split(' ')[1:]), x[i][0].split(' ')[0]) for i in range(0, len(x))]
+	w_csv(numbers, 'Numbers1.csv')
+	return "Complete"
+
+def joiner(x,s = ' '):#accepts a list then joins its elements together with empty spaces
+	'''if s != ' ':
+		s'''
+	return s.join(x) 
