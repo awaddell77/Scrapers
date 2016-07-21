@@ -449,7 +449,7 @@ class S_format(object):
 
     def bc_b_url(self,x):#x is the url
         if x == '' or x == None:
-            return
+            return 'None'
     
         base = ''
         url = base + x
