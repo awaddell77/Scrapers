@@ -29,14 +29,7 @@ def splitter(x):
 		else:
 			d[headers[i].text] = cell.text
 
-
-
-
-
-		#d[headers[i].text] = cell
 	return S_format(d).d_sort(crit)
-
-
 
 def i_n_splitter(x): #grabs image link and card name from main card table
 	site = S_base(x).soupmaker()
