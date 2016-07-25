@@ -523,7 +523,8 @@ class S_table(object):
             print("Found target parent.")
             return item
         else:
-            return "Could not find parent with the target tag %s" % t_tag
+            print("Could not find parent with the target tag %s" % (t_tag))
+            return False
 
                 
         
@@ -901,7 +902,7 @@ def dupe_erase(x):
 
 def r_csv(x,mode='rt'):
     l = []
-    csv_in = open(x, mode)
+    csv_in = open(x, mode, encoding = 'utf-8')
     myreader = csv.reader(csv_in)
     for row in myreader:
         l.append(row)

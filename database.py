@@ -1,7 +1,9 @@
 #mysql 
-
+import re
 from soupclass8 import C_sort,r_csv
 
+def login(x):
+	pass
 
 def import_data(x):
 	info = C_sort(x)
@@ -11,11 +13,15 @@ def import_data(x):
 
 	return db_columns, db_contents
 
-def table_construct(x, command):
+def table_create(x, table_name, location=''):
 	#creates table of text columns usings the provided list as column headers
-	new = [x[i] + " TEXT" for i in range(0, len(x))]
+	new = [re.sub(' ', '_', x[i].strip(' ')) + " TEXT" for i in range(0, len(x))]
 	contents = ', '.join(new)
-	return command + ' ' + contents + ' ;'
+	if location == '':
+		return 'CREATE TABLE ' + table_name + ' (' + contents + ') ;'
+	else:
+		return 'CREATE TABLE ' + table_name +'.'+ location + ' (' + contents + ') ;'
+
 
 def table_data_prep(x):
 	#adds quotes to every item on a csv list
@@ -25,12 +31,14 @@ def table_data_prep(x):
 	return x 
 def table_insert(x, table):
 	results = []
+	x = table_data_prep(x)
 
 	for i in range(0, len(x)):
-		values = '(' + ','.join(x[i]) + ') ;'
+		values = '(' + ', '.join(x[i]) + ') ;'
 		command = 'INSERT INTO %s VALUES %s' % (table, values)
-		print(command)
+		#print(command)
 		results.append(command)
+	return results
 
 
 

@@ -1,8 +1,7 @@
 import urllib, urllib2, lxml, requests
 from bs4 import BeautifulSoup as bs
 import csv
- 
-
+from soupclass8 import *
 '''NOTES: 2/10/2016
 -
 -Moved bsObject into main function in order to decrease redundant get requests
@@ -45,7 +44,7 @@ def main_s(x): #singles
             b_rows = thtd(a_table)
             t_results.append(b_rows)
     #w_csv(none_remover(t_results))
-    return t_results
+    return(t_results)
 
 def remover(x):
     l = []
@@ -65,7 +64,7 @@ def none_remover(x):
         if n[i] == None:
             n[i] = [["Number %d was not found" % (i)]]
             none_c = none_c + 1
-    print "%d entries were not found." % (none_c)
+    print ("%d entries were not found." % (none_c))
         
     return n
         
@@ -93,19 +92,17 @@ def encoder(x):#takes text from bsObject tag(s) and converts into unicode-free s
     h = x
     try:
         h = x.encode('ascii', 'ignore')
+
         #print 'Tried to encode' #for testing
     except UnicodeEncodeError as U:
         h = h.encode('utf-8', 'ignore')
         print 'UTF-8'
-        return h
+        return(h)
     except AttributeError as E:
-        print E
+        print(E)
         return x
-    else:
-        h = x.encode('ascii', 'ignore')
-        print 'ASCII'
-        return h
-
+    print('ASCII')
+    return h
 
 def dup_erase(x):#accepts list, returns a list that does not containt any elements in the "bad" list
     l_1 = []
@@ -185,4 +182,19 @@ def linkf(x):#takes link tag (MUST BE STRING) and extracts the link
             ln = ln_s[i+1] #ln is the link (still needs to be joined witht the base URL
     #ln = b_url + ln #MAJOR WORKAROUND!!!! IN THE FUTURE THS SHOULD CALL A FUNCTION THAT FINDS THE BASE
     return ln
+
+def ygo_link_grab(x, card_name):
+    url = x
+    if S_base(url).soupmaker().find(string=re.compile(card_name)) == None:
+        return 'None found'
+    else:
+        site = S_base(url).soupmaker()
+        item = site.find(string=re.compile(card_name))
+        table = S_table(site).table_find(item)
+        if table != False:
+            links_r = S_table(table).table_eater_exp('a',1, 4)
+            links = ['http://yugioh.wikia.com' + S_format(str(links_r[i])).linkf('<a href=') for i in range(0, len(links_r))]
+            text_wc(links)
+            return links
+
 
