@@ -8,7 +8,7 @@ class Db_mngmnt(object):
 		user = self.user
 		password = self.password
 		database = self.database
-
+	
 	def login(self):
 	cnx = mysql.connector.connect(user=self.user, password=self.password, host='127.0.0.1', database=self.database)
 	cursor = cnx.cursor(buffered = True)

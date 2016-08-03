@@ -41,7 +41,7 @@ def main(x):#batch
         if bsObject.find('div', {'style':'float:left;'}) != None:
             image_r = bsObject.find('div', {'style':'float:left;'}).a
             image_link = S_format(str(image_r)).linkf('href=')
-            image = fn_grab(image_link)
+            image = image_link.split('/')[7]
 
         a_table = sfind(bsObject)
 
@@ -54,7 +54,7 @@ def main(x):#batch
 
         elif len(a_table) == 2:
             b_rows = td(a_table[0])
-            b_rows.append(encoder(a_table[1].text).translate(None, '\n'))
+            b_rows.append(re.sub('\n','', a_table[1].text))
             b_rows.append(image_link)
             b_rows.append(image)
             t_results.append(b_rows)
@@ -66,8 +66,9 @@ def main(x):#batch
 
 
     w_csv(t_results)
-    print(t_results)
-    return "Complete"
+    #print(t_results)
+    print("Complete")
+    return t_results
 
 def main_s(x): #singles
     urls = [x]
@@ -78,7 +79,7 @@ def main_s(x): #singles
         print(a_table)
         if len(a_table) == 2:
             b_rows = td(a_table[0])
-            b_rows.append(encoder(a_table[1].text).translate(None, '\n'))
+            b_rows.append(re.sub('\n','', a_table[1].text))
             t_results.append(b_rows)
         else:
             b_rows = td(a_table)
@@ -188,12 +189,15 @@ def td(x, custom='NA'):#TO BE DONE: FIND ALL td from the main table and then jus
         if i % 2 == 0:
             
             try:
-                d[encoder(table_c[i].text).translate(None, '\n').strip(' ')] = encoder(table_c[i + 1].text).translate(None, '\n').strip(' ')
+                d[re.sub('\n', '', table_c[i].text).strip(' ')] = re.sub('\n','',table_c[i + 1].text).strip(' ')
             except IndexError as IE:
                 print(d)
                 return d_sort(d)
                 
-    print(d)
+    try:
+        print(d)
+    except UnicodeEncodeError as UE:
+        print('Retrieval Successful')
     return d_sort(d)
     #return (l_maker(d_sort(d)))
 
@@ -237,10 +241,10 @@ def d_sort(x):
     for i in range(0, len(criteria)):
         n_l.append([d.get(criteria[i], default)])
         #del d[criteria[i]]
-    l = d.keys()
-    for i in range(0, len(l)):
+    #l = d.keys()
+    '''for i in range(0, len(l)):
         if len(l[i]) > 12:
-            n_l.append(l[i])
+            n_l.append(l[i])'''
     return n_l
     
 def l_maker(x):#sorts through elements of a list to check if those elements are lists
@@ -259,7 +263,7 @@ def l_maker(x):#sorts through elements of a list to check if those elements are 
         
     
         
-def text_l(x):
+'''def text_l(x):
     words = ''
     l = []
     with open(x, 'r') as f:
@@ -269,7 +273,7 @@ def text_l(x):
             print words
             l.extend(words)
         print l
-        return l
+        return l'''
 '''def sort1(x):#sorts through list deletes elements with specific keywords
     keyword = ["Kanji"]
     for i in range(0, len(x)):
@@ -277,7 +281,7 @@ def text_l(x):
         
         
         
-def w_csv(x,output='FCfile.csv'):#accepts lists of other lists, spits out CSV file
+'''def w_csv(x,output='FCfile.csv'):#accepts lists of other lists, spits out CSV file
     csv_out = open(output, 'wb')
     mywriter = csv.writer(csv_out)
     print "This is x: %s" % (x)
@@ -291,7 +295,7 @@ def r_csv(x):
     for row in myreader:
         l.append(row)
     csv_in.close()
-    return l
+    return l'''
 def csv_ext(x,n):#n is cell number/location within the list where the needed info is located
     l = []
     for i in range(0, len(x)):

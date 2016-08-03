@@ -107,9 +107,10 @@ class S_base(object):
         html = html.content
         bsObject = bs(html, 'lxml')
         return bsObject
-    def sel_soup(self, wait= 0, scroll = 0):#uses Selenium to retrieve the site's html code, good for sites with lots of JS
+    def sel_soup(self, quit = 0, wait= 0, scroll = 0):#uses Selenium to retrieve the site's html code, good for sites with lots of JS
         browser = webdriver.Firefox()
         #browser = webdriver.PhantomJS()
+        #too many ifs, fix control flow
         browser.get(self.url)
         if scroll != 0:
             browser.execute_script("window.scrollTo(0,10)")
@@ -117,9 +118,13 @@ class S_base(object):
             browser.implicitly_wait(wait)
 
         html = browser.page_source
-        browser.quit()
-        bsObject = bs(html, 'lxml')
-        return bsObject
+        if quit == 0:
+            browser.quit()
+            bsObject = bs(html, 'lxml')
+            return bsObject
+        if quit != 0:
+            bsObject = bs(html, 'lxml')
+            return bsObject
 
 
     def soup_target(self):
