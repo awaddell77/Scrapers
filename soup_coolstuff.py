@@ -5,6 +5,7 @@ def main(x):
 	results = []
 	for i in range(0, len(urls)):
 		results.extend(images_ng(urls[i]))
+	w_csv(results)
 	return results
 
 
