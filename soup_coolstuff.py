@@ -7,7 +7,12 @@ def main(x):
 		results.extend(images_ng(urls[i]))
 	w_csv(results)
 	return results
-
+def main_auto(x):
+	url = x
+	site = Sel_session(url).source()
+	if site.element_check('nextLink'):
+		while site.element_check('nextLink'):
+			pass
 
 def images_ng(x):
 	#returns the image links, image names, and product names
@@ -23,5 +28,6 @@ def images_ng(x):
 			link_i = S_format(str(links_r[i])).linkf('src=')
 			results.append((S_format(str(links_r[i])).linkf('<img alt='), link_i, fn_grab(link_i)))
 	return results
+
 
 

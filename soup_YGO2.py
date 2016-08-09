@@ -118,7 +118,6 @@ def thtd(x):
     bsObject = x
     headers = bsObject.find_all('th')
     for i in range(0, len(headers)):
-        #head, cell = headers[i], headers.find('td')
         if headers[i].next_sibling != None:
             try:
                 d[encoder(headers[i].text).translate(None, '\n')] = encoder(headers[i].next_sibling.text).translate(None, '\n')
@@ -133,11 +132,10 @@ def thtd(x):
 def d_sort(x):
     d = x
     n_l = []
-    criteria = ['English', 'ATK / DEF', 'Types','Type', 'Card Number', 'Level', 'Attribute']
+    criteria = ['English', 'ATK / DEF', 'Types','Type', 'Card Number', 'Level', 'Attribute', 'Passcode']
     default = "Not Available"
     for i in range(0, len(criteria)):
         n_l.append(d.get(criteria[i], default))
-        #del d[criteria[i]]
     l = d.keys()
     return n_l
 

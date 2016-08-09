@@ -167,7 +167,18 @@ class Sel_session(object):
         return self.driver
 
     def source(self):
-        return self.driver.page_source        
+        return self.driver.page_source
+
+    def element_check(self, element):
+        try:
+            self.driver.find_element_by_id(element)
+        except:
+            return False
+        else:
+            return True
+
+
+
 
 
 class S_mix(S_base):#
