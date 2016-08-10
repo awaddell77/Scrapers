@@ -1,5 +1,5 @@
-
-from soupclass7 import *
+import sys
+from soupclass8 import *
 #troll and toad link grabber
 
 
@@ -35,6 +35,7 @@ def main_images(x):
     for i in range(0, len(urls)):
         results.extend(images(urls[i],1))
     w_csv(results,'TNT.csv')
+    print("Complete")
     return results
 def images(x,csv_out = 0, base='http://940ee6dce6677fa01d25-0f55c9129972ac85d6b1f4e703468e6b.r99.cf2.rackcdn.com/products/pictures/'):#can handle bsObjects and url strings
     site = x
@@ -71,7 +72,7 @@ def splitter(x):
     results = (p_name.text, d['Figure Number:'], d['Rarity:'], image_link, d['Product Image'])
     return results
 
-
+main_images(sys.argv[1])
 
         
         
