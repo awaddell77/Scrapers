@@ -1,6 +1,12 @@
 #scraping collectors cache
 from soupclass8 import *
 import sys
+#http://old.collectorscache.com/StoreModules/ShowCategory.aspx?CategoryID=189&tabid=9&tabindex=0&Show=All
+
+def main(x, fname = 'jpokemon.csv', dir_name='Batch Test'):
+	links = link_grab(x)
+	new = [splitter(links[i]) for i in range(0, len(links))]
+	w_csv(new, fname)
 
 def splitter(x):
 	#scrapes the unique item page
