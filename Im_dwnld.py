@@ -1,17 +1,14 @@
+import re, requests, os
+from os.path import join
 
 
 
-
-
-
-
-
-class I_dwnld(object):#not tested and probably does not work
+class Im_dwnld(object):#not tested and probably does not work
     def __init__(self, directory ='BATCH DOWNLOAD'):
         self.directory = directory
 
-    def main(self, ext_file = 0):
-    	urls = ext_file
+    def i_main(self, ext_file = 0):
+        urls = ext_file
         self.d_create(self.directory)
         for i in range(0, len(urls)):
             print("Now Downloading %s (Item #%d of %d)" % (urls[i], i+1, len(urls)))
