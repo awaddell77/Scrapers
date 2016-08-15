@@ -22,7 +22,7 @@ class Im_dwnld(object):#not tested and probably does not work
         self.d_create(self.directory)
         for i in range(0, len(urls)):
             print("Now Downloading %s (Item #%d of %d)" % (urls[i], i+1, len(urls)))
-            self.d_img(urls[i],names[i], self.directory)
+            self.d_img(urls[i], self.directory, names[i])
         return 'Downloaded %d files to %s' % (len(urls),self.directory)
 
 
@@ -63,8 +63,12 @@ class Im_dwnld(object):#not tested and probably does not work
             ext = lfname[len(lfname)-1]
             return fname, ext
             
-    def d_img(self, x, mask= 0,d_dir='C:\\Users\\Owner\\'):#downloads image, returns file name
-        img = requests.get(x)
+    def d_img(self, x, d_dir='C:\\Users\\Owner\\', mask= 0):#downloads image, returns file name
+        try:
+            img = requests.get(x)
+        except:
+            print("Second attempt at %s" % x)
+            img = requests.get(x)
         img_n = self.n_exts(x)
         if mask != 0:
             img_n = [mask + '.' + img_n[1]] #has to be list for consistency

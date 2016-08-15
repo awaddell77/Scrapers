@@ -1,7 +1,8 @@
-import urllib, urllib2, lxml, requests
+import lxml, requests
 from bs4 import BeautifulSoup as bs
 import csv
 from soupclass8 import *
+import sys
 '''NOTES: 2/10/2016
 -
 -Moved bsObject into main function in order to decrease redundant get requests
@@ -10,9 +11,11 @@ from soupclass8 import *
 
 
 
-def main(x):#batch
+def main(x, links=0):#batch
     
     urls  = text_l(x)
+    if links != 0:
+        urls = x
     t_results = [['Name', 'ATK/DEF', 'Monster Type','Card Type', 'Passcode', 'Level','Attribute','Card Text','Set']]
     for i in range(0, len(urls)):
         bsObject = soupmaker(urls[i])
@@ -27,7 +30,7 @@ def main(x):#batch
             b_rows = thtd(a_table)
             t_results.append(b_rows)
     w_csv(t_results)
-    print t_results
+    print(t_results)
     return "Complete"
 
 def main_s(x): #singles
@@ -96,7 +99,7 @@ def encoder(x):#takes text from bsObject tag(s) and converts into unicode-free s
         #print 'Tried to encode' #for testing
     except UnicodeEncodeError as U:
         h = h.encode('utf-8', 'ignore')
-        print 'UTF-8'
+        print('UTF-8')
         return(h)
     except AttributeError as E:
         print(E)
@@ -147,9 +150,9 @@ def text_l(x):
         data = f.readlines()
         for line in data:
             words = line.split()
-            print words
+            print(words)
             l.extend(words)
-        print l
+        print(l)
         return l
 
         
@@ -157,7 +160,7 @@ def text_l(x):
 def w_csv(x):#accepts lists of other lists, spits out CSV file
     csv_out = open('YGOfile1.csv', 'wb')
     mywriter = csv.writer(csv_out)
-    print "This is x: %s" % (x)
+    print ("This is x: %s" % (x))
     mywriter.writerows(x)
     csv_out.close()
     return
@@ -195,4 +198,8 @@ def ygo_link_grab(x, card_name):
             text_wc(links)
             return links
 
-
+if len(sys.argv) > 1:
+    if sys.argv[1] == '-b':
+        main(sys.argv[2])
+    elif sys.argv[1] == '-t':
+        main(ygo_link_grab(sys.argv[2], sys.argv[3]),1)
