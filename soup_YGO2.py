@@ -191,7 +191,7 @@ def ygo_link_grab(x, card_name):
     else:
         site = S_base(url).soupmaker()
         item = site.find(string=re.compile(card_name))
-        table = S_table(site).table_find(item)
+        table = S_table(site).table_find(item) #test
         if table != False:
             links_r = S_table(table).table_eater_exp('a',1, 4)
             links = ['http://yugioh.wikia.com' + S_format(str(links_r[i])).linkf('<a href=') for i in range(0, len(links_r))]

@@ -3,6 +3,7 @@ import requests, lxml
 import unicodedata
 from PIL import Image
 import subprocess, os, csv, re, time
+import sys
 from os.path import join
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -53,8 +54,6 @@ thereby making the encode
 7/6/16
 -Added directory manager
 '''
-
-
 
 
 class S_base(object):
@@ -176,92 +175,6 @@ class Sel_session(object):
             return False
         else:
             return True
-
-
-
-
-
-class S_mix(S_base):#
-    def __init__(self, url, stealth = 0):
-        self.url = url
-        self.stealth = stealth
-        if stealth != 0:
-            bsObject = self.stealth_smaker()
-
-        else:
-            bsObject = self.soupmaker()
-
-    def table_ext(self,s, n=3, tag = 'a'):#uses a string from a table to find the table and then extracts that table's content 
-        site = self.bsObject
-        if item_parent(site, s, n) != False:
-            table = item_parent(site, s, n)
-            table_f = table_fix(table)
-            results = table_eater(table, tag)
-        return results
-
-    def item_parent(self, s, n=3):#finds an element that contains a certain string, then returns the nth parent of that element
-        item = self.bsObject.find(string=re.compile(s))
-        if item == None:
-            return False
-        else:
-            for i in range(0, n):
-                item = self.p_find(item)
-        return item
-    
-    def p_find(self,x):
-        x = x.parent#retrieves the parent of the element
-        return x
-    
-    def table_fix(self,x):#parses through table cells and inserts a string in those cells that are empty 
-        cells = x.find_all('td')
-        for i in range(0, len(cells)):
-            if cells[i] == None:
-                cells[i].string = 'No Links Found'#places a string in the otherwise empty cell
-        return cells
-    
-    def table_eater(self, x, t_tag, tag='td', start = 0 , step = 1):
-        #returns list of the contents of all cells. If cell has no content it still appends a bsObject to list as a placeholder
-        cells = x.find_all(tag)#by default the function sorts through all table cells
-        l = []
-        for i in range(start, len(cells), step):
-            if cells[i].find(t_tag) != None:
-                new = cells[i].find(t_tag)
-                l.append(new)
-            else:
-                l.append(bs('None Found','lxml'))#The string is converted to a bsObject for parsing purposes and to maintain appropriate list length
-        return l    
-        
-
-        
-    def th_td(self,x):#table processing for th-td tables where th is a sibling with td 
-        table = x
-        headers = table.find_all('th')
-        d={}
-        for i in range(0, len(headers)):
-            cell = headers[i].find_next_sibling()
-            d[S_format(headers[i].text).encoder()] = cell
-        return d
-
-    
-    def td(self,x, n = 2, start = 0):#table/page processing where both the header and the information are in td tags. Basically it starts at st and appends everything nth item
-        l = []
-        d = {}
-        if x == None:
-            return None
-        bad = ( 'Gallery Tips Rulings Errata Trivia Character', 'Character', 'Trivia', 'Errata', 'Gallery', 'Tips', 'Rulings', 'Illus:')
-        table_c = x.find_all('td')
-        for i in range(start, len(table_c),n):
-            d[encoder(table_c[i].text).translate(None, '\n').strip(' ')] = encoder(table_c[i + 1].text).translate(None, '\n').strip(' ')
-            #l.append(encoder(table_c[i].text).translate(None, '\n').strip(' '))
-        ae_head = x.find('th', string=" Ability / Effect:\n")
-        if ae_head != None:#this grabs the ability / effect text
-            ae_contents = ae_head.findNext('tr')
-            d['Ability / Effect:'] = encoder(ae_contents.text).translate(None, '\n').strip(' ')#FIX THIS PART!
-        return (l_maker(d_sort(d)))   
-    
-    
-
-    
     
 
     
@@ -527,23 +440,18 @@ class S_table(object):
                 l.append(new)
             else:
                 l.append(bs('None Found','lxml'))#The string is converted to a bsObject for parsing purposes
-        return l    
+        return l
 
     def table_find(self, item, t_tag = 'table', limit=40):
-        n = 0
-
-        while item.name != t_tag and n != limit:
-            item = self.p_find(item) #using recursion to find target parent
-            n += 1
-        if item.name == t_tag:
-            print("Found target parent.")
-            return item
-        else:
+            n = 0
+            while item.name != t_tag and n != limit:
+                item = self.p_find(item) 
+                n += 1
+                if item.name == t_tag:
+                    print("Found target parent.")
+                    return item
             print("Could not find parent with the target tag %s" % (t_tag))
             return False
-
-                
-        
     def p_find(self,x):
         x = x.parent
         return x
@@ -909,6 +817,9 @@ class Csv_gen(object):
         return b
 
 #Stand-alone functions
+
+
+
 def dupe_erase(x):
     l = []
     for i in range(0, len(x)):

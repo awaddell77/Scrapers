@@ -2,6 +2,7 @@ import lxml, requests
 from bs4 import BeautifulSoup as bs
 import csv
 from soupclass8 import *
+import sys
  
 '''NOTES: 2/10/2016
 -
@@ -30,9 +31,17 @@ def main2(x):
     return t_results
 
 
-def main(x):#batch
-    
-    urls  = text_l(x)
+def main(x):
+    #batch
+    if type(x) == list:
+        urls = x
+    elif type(x) == str:
+        urls  = text_l(x)
+    else:
+        print("Argument must be either a list or a string (file name)")
+        return
+
+
     t_results = [['Clan','Trigger', 'Grade / Skill', 'Name', 'Power', '', '', 'Race', 'Nation', 'Critical', 'Shield', 'Card Effect', 'Set Name']]
     for i in range(0, len(urls)):
         bsObject = S_base(urls[i]).soupmaker_batch()
@@ -347,3 +356,26 @@ def joiner(x,s = ' '):#accepts a list then joins its elements together with empt
 	'''if s != ' ':
 		s'''
 	return s.join(x) 
+
+def CFVG_link_grab(x, card_name):
+    site = S_base(x).soupmaker()
+    table = S_table(site).table_find(site.find(string=(re.compile(card_name.strip(' ')))))
+    if table == False:
+        print("Could not find table containing %s" % card_name)
+        return
+    table_items = S_table(table).table_eater_exp('a',1, 6)
+    links = ['http://cardfight.wikia.com' + S_format(str(table_items[i])).linkf('<a href=') for i in range(0, len(table_items))]
+    return links
+
+
+if len(sys.argv) == 1:
+    print("[-t -l] [card name][file name]")
+elif sys.argv[1] == '-t':
+    print(sys.argv[2])
+    print(sys.argv[3])
+    main(CFVG_link_grab(sys.argv[2], sys.argv[3]))
+elif sys.argv[1] == '-l':
+    main(sys.argv[2])
+else:
+    print("[-t -l] [card name][file name]")
+
