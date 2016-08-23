@@ -1,4 +1,5 @@
 from soupclass8 import *
+import sys
 
 def main(x):
 	urls = text_l(x)
@@ -30,4 +31,9 @@ def images_ng(x):
 	return results
 
 
+
+if len(sys.argv) != 1:
+	main(sys.argv[1])
+else:
+	print("[file name]")
 

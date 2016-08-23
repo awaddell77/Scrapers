@@ -7,6 +7,9 @@ import sys
 from os.path import join
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 from dir_man import *
 '''VERSION NOTES:
 2/17/2016
@@ -156,7 +159,7 @@ class S_base(object):
 
 
 class Sel_session(object):
-    def __init__(self, url, *args):
+    def __init__(self, url='http://www.fsf.org/', *args):
         self.url = url
         self.args = args
         self.driver = webdriver.Firefox()
@@ -164,9 +167,14 @@ class Sel_session(object):
     def start(self):
         self.driver.get(self.url)
         return self.driver
+    def go_to(self,x):
+        self.driver.get(x)
+
+
+
 
     def source(self):
-        return self.driver.page_source
+        return bs(self.driver.page_source,'lxml')
 
     def element_check(self, element):
         try:
