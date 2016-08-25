@@ -169,6 +169,8 @@ class Sel_session(object):
         return self.driver
     def go_to(self,x):
         self.driver.get(x)
+    def js(self, x):
+        return self.driver.execute_script(x)
 
 
 

@@ -4,26 +4,36 @@
 from soupclass8 import *
 import sys
 
-browser = webdriver.Firefox()
+browser = Sel_session()
 
 def link_grab(set_name):
 	links = []
-	browser.get('http://ws-tcg.com/en/cardlist/list/')
+	browser.go_to('http://ws-tcg.com/en/cardlist/list/')
 	try:
-		browser.find_element_by_link_text(set_name)
+		browser.driver.find_element_by_link_text(set_name)
 	except:
 		print("Could not find set")
 		return
 	else:
-		browser.find_element_by_link_text(set_name).click()
+		browser.driver.find_element_by_link_text(set_name).click()
 
-	buttons = len(browser.find_elements_by_xpath("//p[@class='pageLink']/*"))  #grabs link bar elements
-	for i in range(0, buttons-4):
+
+	wait = WebDriverWait(browser.driver, 10)
+	wait.until(EC.element_to_be_clickable((By.ID,'expansionDetail')))
+	wait.until(EC.element_to_be_clickable((By.ID,'expansionDetail_table')))
+	buttons = browser.js('return document.getElementsByClassName("pageLink")[0].children;')
+	button_length = int(browser.js('return document.getElementsByClassName("pageLink")[0].children.length;'))
+	#grabs link bar elements
+	while browser.js('return document.getElementsByClassName("pageLink")[0].children[%s].className;' % (str(button_length-1))) == "":
+
 		#only needs to click a specific number of times
-		
-		site = bs(browser.page_source, 'lxml')
+		wait.until(EC.element_to_be_clickable((By.ID,'expansionDetail')))
+		wait.until(EC.element_to_be_clickable((By.ID,'expansionDetail_table')))
+		site = browser.source()
 		links.extend(table_links(site))
-		browser.find_elements_by_xpath("//p[@class='pageLink']/*")[buttons-1].click()
+		browser.js('return document.getElementsByClassName("pageLink")[0].children[%s].click();' % (str(button_length-1)))
+	#links.extend(table_links(browser.source()))
+	text_wc(links)
 	return links
 
 
@@ -31,7 +41,7 @@ def table_links(x):
 	site = x #must be beautifulsoup object
 	table = site.find('div', {'id':'expansionDetail_table'})
 	links_r = S_table(table).table_eater_exp('a',2,5)
-	new = ["http://ws-tcg.com/en/cardlist/list" + re.sub('./','/', S_format(str(links_r[i])).linkf('<a href=')) for i in range(0, len(links_r))]
+	new = ["http://ws-tcg.com/en/cardlist/list" + re.sub('\./','/', S_format(str(links_r[i])).linkf('<a href=')) for i in range(0, len(links_r))]
 	return new
 if len(sys.argv) != 1:
 	link_grab(sys.argv[1])

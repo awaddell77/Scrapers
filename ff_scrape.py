@@ -60,7 +60,7 @@ def splitter(x):
 	browser.go_to(x)
 	time.sleep(2)
 	wait = WebDriverWait(browser.driver, 10)
-	wait.until(EC.element_to_be_clickable((By.CLASS_NAME,'bx-viewport')))
+	#wait.until(EC.element_to_be_clickable((By.CLASS_NAME,'bx-viewport')))
 	wait.until(EC.presence_of_element_located((By.CLASS_NAME,'store-message')))
 	site = browser.source()
 	print("Now processing %s" % (x))
@@ -73,12 +73,37 @@ def splitter(x):
 		image_link_r = browser.driver.execute_script('return document.getElementsByClassName("product carousel-img-container")[0].innerHTML;')
 		image_link = S_format(image_link_r).linkf('src=')
 		image_name = fn_grab(image_link)
-	name = site.find('h1', {'class':'product-name'}).text
-	price = site.find('span', {'class':'store-price ng-binding'}).text
+	try:
+		price = browser.driver.execute_script('return document.getElementsByClassName("store-price ng-binding")[0].innerHTML;')
+	except:
+		price = "No Price Found"
+	name = site.find('h1', {'class':'product-name'})
 	t_data = site.find('div',{'id':'technical-data'})
-	SKU = t_data.find(string=re.compile('SKU')).find_next().text
-	ISBN = t_data.find(string=re.compile('ISBN')).find_next().text
-	return (name, price, SKU, ISBN, image_link, image_name)
+	SKU = next_find(t_data.find(string=re.compile('SKU')))
+	ISBN = next_find(t_data.find(string=re.compile('ISBN')))
+	return con_text((name, SKU, ISBN)) + (price, image_link, image_name)
+
+def con_text(x):
+	#replaces Nones with "Not available"
+	if type(x) == tuple:
+		new = list(x)
+	elif type(x) == list:
+		new = x
+	else:
+		return "Argument must be either tuple or list"
+	for i in range(0, len(new)):
+		try:
+			new[i] = new[i].text
+		except AttributeError as AE:
+			new[i] = "Not available"
+	return tuple(new)
+def next_find(x):
+	try:
+		x.find_next()
+	except AttributeError as AE:
+		return None
+	else:
+		return x.find_next()
 
 if len(sys.argv) > 1:
 	if sys.argv[1] == '-t':

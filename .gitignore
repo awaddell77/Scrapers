@@ -1,21 +1,11 @@
-*.pyc
-listoutput.txt
-FCfile.csv
-YGOfile1.csv
-YGO SET.txt
-Numbers1.csv
-*.txt
-TEST.csv
-FOW111.html
-gtsimages.html
-YGO IMAGES.csv
-ygo.html
-TNT.csv
-*.csv
-J-POKEMON/2009 Japanese Pokemon Movie Anniversary/2009pokemonmoviepackbox.jpg
+*.png
 *.jpg
 *.gif
-J-POKEMON/Japanese Intense Fight in the Destroyed Sky/japaneseintensefightpack.png
-*.png
+J-POKEMON/Japanese Bonds to the End of Time.csv
+*.csv
+__pycache__/cli_test.cpython-34.pyc
+*.pyc
 CC_linkscrape.py
 J-POKEMON.zip
+*.zip
+listoutput.txt

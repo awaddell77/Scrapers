@@ -369,13 +369,15 @@ def CFVG_link_grab(x, card_name):
 
 
 if len(sys.argv) == 1:
-    print("[-t -l] [card name][file name]")
+    print("[-t -l -mg] [card name][file name]")
 elif sys.argv[1] == '-t':
     print(sys.argv[2])
     print(sys.argv[3])
     main(CFVG_link_grab(sys.argv[2], sys.argv[3]))
 elif sys.argv[1] == '-l':
     main(sys.argv[2])
+elif sys.argv[1] == '-mg':
+    main_gallery(sys.argv[2])
 else:
-    print("[-t -l] [card name][file name]")
+    print("[-t -l -mg] [card name][file name][gallery URL]")
 
