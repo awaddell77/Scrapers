@@ -3,7 +3,7 @@ from soupclass8 import *
 
 #AGD scraper (example: https://retailerservices.alliance-games.com/Login/Login?ReturnUrl=%2f)
 
-from AGD1 import *
+#from AGD1 import *
 
 browser = webdriver.Firefox()
 browser.get('https://retailerservices.alliance-games.com/Login/Login?ReturnUrl=%2f')
@@ -62,7 +62,9 @@ def result_grab(x):
 	return new
 def browser_grab(x):
 	#starts from the current page the driver is on
-	return result_grab(1)
+	new = result_grab(1)
+	w_csv(new)
+	return new
 
 
 def browser_source(x):
@@ -82,6 +84,8 @@ def item_scrape(x):
 	d = {}
 	source = browser.page_source
 	bsObject = bs(source, 'lxml')
+	title = re.sub('\n', '', bsObject.find('div',{'class':'Description'}).text)
+	d['Title'] = title
 	table = bsObject.find('table', {'class':'ItemDetailTable'})
 	if table == None:
 		return 'Could not find table for %s' % (x)
@@ -90,7 +94,8 @@ def item_scrape(x):
 	for i in range(0, len(headers)):
 		if headers[i].find_next_sibling('td') != None:
 			try:
-				d[S_format(headers[i].text).encoder('\n')] = S_format(headers[i].find_next_sibling('td').text).encoder('\n')
+				d[re.sub('\n', '', headers[i].text)] = re.sub('\n', '', headers[i].find_next_sibling('td').text)
 			except AttributeError as AE:
-				d[S_format(headers[i].text).encoder('\n')] = "None"
-	return d
+				d[re.sub('\n', '', headers[i].text)] = "None"
+	return S_format(d).d_sort(1)
+
