@@ -357,7 +357,10 @@ class S_format(object):
         d = self.s
         n_l = []
         if c == 0:
-            return d.values()
+            return list(d.values())
+        elif c==1:
+            criteria = list(d.keys())
+            default = df
         else:
             criteria = c
             default = df
