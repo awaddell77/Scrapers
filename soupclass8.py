@@ -171,6 +171,8 @@ class Sel_session(object):
         self.driver.get(x)
     def js(self, x):
         return self.driver.execute_script(x)
+    def close(self):
+        return self.driver.quit()
 
 
 

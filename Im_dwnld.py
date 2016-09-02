@@ -3,7 +3,7 @@ from os.path import join
 
 
 
-class Im_dwnld(object):#not tested and probably does not work
+class Im_dwnld(object):
     def __init__(self, directory ='BATCH DOWNLOAD'):
         self.directory = directory
 

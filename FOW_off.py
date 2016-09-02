@@ -1,9 +1,13 @@
 
 #fow official fow (http://fowtcg.com/cards/flame/VIN002/)
 from soupclass8 import *
+import sys
 
 def main(x):
-	urls = text_l(x)
+	if '.txt' in x:
+		urls = link_grab(text_l(x))
+	else:
+		urls = link_grab(x)
 	results = []
 	for i in range(0, len(urls)):
 		results.append(splitter(urls[i]))
@@ -31,8 +35,12 @@ def splitter(x):
 	return tuple(card_info)
 
 def link_grab(x):
-	#takes file name, returns links
-	urls = text_l(x)
+	if '.txt' in x:
+		#takes file name, returns links
+		urls = text_l(x)
+	else:
+		urls = x
+
 	results = []
 	for i in range(0, len(urls)):
 		site = S_base(urls[i]).soupmaker()
@@ -40,4 +48,9 @@ def link_grab(x):
 		new = ['http://fowtcg.com' + S_format(str(links[i])).linkf('<a href=') for i in range(0, len(links))]
 		results.extend(new)
 	return results
+
+if len(sys.argv) > 1:
+	main(sys.argv[2])
+else:
+	print("[link]")
 

@@ -13,9 +13,11 @@ import sys
 
 def main(x, links=0):#batch
     
-    urls  = text_l(x)
+    
     if links != 0:
         urls = x
+    else: 
+        urls  = text_l(x)
     t_results = [['Name', 'ATK/DEF', 'Monster Type','Card Type', 'Passcode', 'Level','Attribute','Card Text','Set']]
     for i in range(0, len(urls)):
         bsObject = soupmaker(urls[i])
@@ -202,4 +204,4 @@ if len(sys.argv) > 1:
     if sys.argv[1] == '-b':
         main(sys.argv[2])
     elif sys.argv[1] == '-t':
-        main(ygo_link_grab(sys.argv[2], sys.argv[3]),1)
+        main(ygo_link_grab(sys.argv[2], sys.argv[3]), 1)

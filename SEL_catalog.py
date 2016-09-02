@@ -58,13 +58,29 @@ class Cat_session(object):#parent class for this pseudo-API
 		element_1 = self.driver.find_element_by_link_text('New Category')
 		element_1.click()
 		return self.driver
-	def b_grab(self, t_class, attribute, value):
+
+	def push_skus(self,x):
+		self.cat_goto(x)
+		try:
+			checkbox = self.driver.find_element_by_id('all_products')
+			all_in_checkbox = self.driver.find_element_by_id('product_variation_category_id')
+			checkbox.click()
+		self.b_grab('btn btn-info','value', 'Push Skus to Clients').click()
+
+
+
+	def b_grab(self, t_class, attribute, value): 
 		#allows you to select a specific button given its class, attribute and that attribute's value
 		items = self.driver.execute_script('return document.getElementsByClassName(%s)' % ('"' + t_class + '"'))
 		if items == []:
 			return "None found"
 		for i in range(0, len(items)):
-			
+			r_value = items[i].get_attribute(attribute)
+			if r_value == value:
+				return items[i]
+		return
+
+
 
 
 
