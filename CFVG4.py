@@ -364,7 +364,7 @@ def CFVG_link_grab(x, card_name):
         print("Could not find table containing %s" % card_name)
         return
     table_items = S_table(table).table_eater_exp('a',1, 6)
-    links = ['http://cardfight.wikia.com' + S_format(str(table_items[i])).linkf('<a href=') for i in range(0, len(table_items))]
+    links = ['http://cardfight.wikia.com' + S_format(str(table_items[i])).linkf('href=',0,1) for i in range(0, len(table_items))]
     return links
 
 
