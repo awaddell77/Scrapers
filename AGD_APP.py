@@ -7,7 +7,7 @@ from soupclass8 import *
 
 browser = webdriver.Firefox()
 browser.get('https://retailerservices.alliance-games.com/Login/Login?ReturnUrl=%2f')
-username = input("Username: ")
+'''username = input("Username: ")
 password = input("Password: ")
 element = browser.find_element_by_id('UserName')
 element1 = browser.find_element_by_id('Password')
@@ -15,7 +15,7 @@ submission = browser.find_element_by_id('Submit')
 element.send_keys(username)
 element1.send_keys(password)
 submission.click()
-
+'''
 
 def item_search_category(category,wait=5):
 	browser.find_element_by_link_text('Item Search').click()
@@ -99,3 +99,30 @@ def item_scrape(x):
 				d[re.sub('\n', '', headers[i].text)] = "None"
 	return S_format(d).d_sort(1)
 
+
+def csv_gen1(x, output="table.csv"):
+	table = S_table(bs(browser_source(1),'lxml')).table_find_str(x)#doesn't work
+	results_1 = []
+	if table:
+		rows = table.find_all('tr')
+	else:
+		return "Could not find table"
+	for i in range(0, len(rows)):
+		cells_r = rows[i].find_all('td')
+		results = []
+		for i_2 in range(0, len(cells_r)):
+			cell = []
+			if i_2 == 1:
+				name = con_text_s(cells_r[i_2].strong) #the title of the product has a <strong> tag
+				new = con_text_s(cells_r[i_2]) #the description
+				#cell.append(name)
+				#cell.append(new)
+				results.append((name))
+				results.append(new)
+			else:
+				new = con_text_s(cells_r[i_2])
+				#cell.append(new)
+				results.append((new))
+		results_1.append(results)
+	w_csv(results_1, output)
+	return results
