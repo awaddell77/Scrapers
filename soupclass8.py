@@ -467,6 +467,22 @@ class S_table(object):
                     return item
             print("Could not find parent with the target tag %s" % (t_tag))
             return False
+
+    def table_find_str(self, x= '', t_tag = 'table', limit=40):
+        #improved version, uses string to find element
+            n = 0
+            item = self.table.find(string=re.compile(x))
+            if item == None:
+                return "Could not find instance of \" {} \"".format(x)
+            while item.name != t_tag and n != limit:
+                item = self.p_find(item) 
+                n += 1
+                if item.name == t_tag:
+                    print("Found target parent.")
+                    return item
+            print("Could not find parent with the target tag %s" % (t_tag))
+            return False
+
     def p_find(self,x):
         x = x.parent
         return x
@@ -474,6 +490,23 @@ class S_table(object):
     def c_find(self, x):
         c_list = [i for i in x.children]#list of the element's children
         return c_list
+
+
+
+    def v_csv(self, x, output="table.csv"):
+        table = self.table_find(self.table.find(string=re.compile(x)))
+        results = []
+        if table:
+            rows = table.find_all('tr')
+
+        for i in range(0, len(rows)):
+            cells_r = rows[i].find_all('td')
+            cells = [con_text_s(cells_r[i]) for i in range(0, len(cells_r))]
+            results.append(cells)
+        w_csv(results, output)
+        return results
+
+
     
 
 class C_sort(object):#for processing CSVs
@@ -1001,6 +1034,16 @@ def con_text(x):
                 new[i] = "Not available"
     return tuple(new)
 
+def con_text_s(x):
+    #for use with a single Beautiful Soup object that has the text attribute
+    try:
+        x = re.sub('\n', '', x.text)
+    except AttributeError as AE:
+        if type(x) == str:
+            return x
+        else:
+            return "Not Available"
+    return x
 
 ###########################################
 
