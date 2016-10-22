@@ -186,7 +186,7 @@ def linkf(x):#takes link tag (MUST BE STRING) and extracts the link
     #ln = b_url + ln #MAJOR WORKAROUND!!!! IN THE FUTURE THS SHOULD CALL A FUNCTION THAT FINDS THE BASE
     return ln
 
-def ygo_link_grab(x, card_name):
+def ygo_link_grab(x, card_name, cells=4):
     url = x
     if S_base(url).soupmaker().find(string=re.compile(card_name)) == None:
         return 'None found'
@@ -195,7 +195,7 @@ def ygo_link_grab(x, card_name):
         item = site.find(string=re.compile(card_name))
         table = S_table(site).table_find(item) #test
         if table != False:
-            links_r = S_table(table).table_eater_exp('a',1, 4)
+            links_r = S_table(table).table_eater_exp('a',1, cells) #4 for normal tables, 5 for tables with quantity column
             links = ['http://yugioh.wikia.com' + S_format(str(links_r[i])).linkf('<a href=') for i in range(0, len(links_r))]
             text_wc(links)
             return links

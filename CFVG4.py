@@ -267,44 +267,7 @@ def l_maker(x):#sorts through elements of a list to check if those elements are 
      
     
     
-    
-        
-        
-    
-        
-'''def text_l(x):
-    words = ''
-    l = []
-    with open(x, 'r') as f:
-        data = f.readlines()
-        for line in data:
-            words = line.split()
-            print words
-            l.extend(words)
-        print l
-        return l'''
-'''def sort1(x):#sorts through list deletes elements with specific keywords
-    keyword = ["Kanji"]
-    for i in range(0, len(x)):
-        for l in'''
-        
-        
-        
-'''def w_csv(x,output='FCfile.csv'):#accepts lists of other lists, spits out CSV file
-    csv_out = open(output, 'wb')
-    mywriter = csv.writer(csv_out)
-    print "This is x: %s" % (x)
-    mywriter.writerows(x)
-    csv_out.close()
-    return
-def r_csv(x):
-    l = []
-    csv_in = open(x, 'rb')
-    myreader = csv.reader(csv_in)
-    for row in myreader:
-        l.append(row)
-    csv_in.close()
-    return l'''
+
 def csv_ext(x,n):#n is cell number/location within the list where the needed info is located
     l = []
     for i in range(0, len(x)):
@@ -344,6 +307,11 @@ def main_gallery(x):
 	#new will be a list of tuples containing the card number and then link to the card
 	link_write(new)
 	return new
+def main_galler_img(x):
+    site = S_base(x).soupmaker()
+    r_links = site.find_all('a' {'class':'image lightbox'})
+
+    new  = 
 
 def link_write(x):
 	links = [x[i][1] for i in range(0, len(x))]
