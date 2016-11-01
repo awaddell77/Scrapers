@@ -97,7 +97,8 @@ def item_scrape(x):
 				d[re.sub('\n', '', headers[i].text)] = re.sub('\n', '', headers[i].find_next_sibling('td').text)
 			except AttributeError as AE:
 				d[re.sub('\n', '', headers[i].text)] = "None"
-	return S_format(d).d_sort(1)
+	#return S_format(d).d_sort(1)
+	return d
 
 
 def csv_gen1(x, output="table.csv"):
