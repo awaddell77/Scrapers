@@ -196,7 +196,7 @@ def ygo_link_grab(x, card_name, cells=4):
         table = S_table(site).table_find(item) #test
         if table != False:
             links_r = S_table(table).table_eater_exp('a',1, cells) #4 for normal tables, 5 for tables with quantity column
-            links = ['http://yugioh.wikia.com' + S_format(str(links_r[i])).linkf('<a href=') for i in range(0, len(links_r))]
+            links = ['http://yugioh.wikia.com' + S_format(str(links_r[i])).linkf('href=', 0, 1) for i in range(0, len(links_r))]
             text_wc(links)
             return links
 
