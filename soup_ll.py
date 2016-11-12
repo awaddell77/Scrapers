@@ -2,7 +2,15 @@
 from soupclass8 import *
 
 def ll_main(x):
-	urls = text_l(x)
+	try:
+		x[0]
+	except IndexError:
+		if '.txt' in x:
+			urls = text_l(x)
+		else:
+			return "Should raise an exception instead of returning something"
+	else:
+		urls = x
 	results = [['NAME', 'ATTRIBUTE 1', 'ATTRIBUTE 2', 'CARD NO.', 'PARADOX RULE', 'POWER', 'AURA', 'INTERCEPT', 'RARITY', 'SOUL', 'TERRITORY', 'LEVEL', 'TYPE', 'LOGIC',
 	 'WORLD', 'GATE NUMBER', 'COLOR', 'COST', 'TEXT', 'LIMIT', 'COVENANTER']]
 	for i in range(0, len(urls)):
@@ -44,8 +52,12 @@ def i_n_splitter(x): #grabs image link and card name from main card table
 		name = rows[0].th.text
 		number = rows[1].td.text
 		results.append((name, number, link, image_name, image_link))
-	return results
-
+	w_csv(results, "LL Links.csv")
+	all_links = [results[i][2] for i in range(0, len(results))]
+	return all_links
+if len(sys.argv) > 1:
+	ll_main(i_n_splitter(sys.argv[1]))
+	#lower case 
 
 
 
