@@ -6,12 +6,12 @@ import sys
 
 def splitter(x):
 	site = S_base(x).sel_soup()
-	elements = site.find_all('div',{'class':'miniframe'})
+	elements = site.find_all('div',{'class':'miniboxFrameStandard'})
 	results = []
 	for i in range(0, len(elements)):
 		rarity = elements[i].find('div', {'class':'boxrarity'})
 		name = elements[i].find('div', {'class':'boxname_normal'})
-		image_r = elements[i].find('div', {'class':'boximage'}).img
+		image_r = elements[i].find('div', {'class':'miniboxImageStandard'}).img
 		image_link = S_format(str(image_r)).linkf('src=')
 		image_name = fn_grab(image_link)
 		new = con_text((name, rarity))
