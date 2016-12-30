@@ -86,7 +86,8 @@ def item_scrape(x):
 	bsObject = bs(source, 'lxml')
 	title = re.sub('\n', '', bsObject.find('div',{'class':'Description'}).text)
 	d['Title'] = title
-	table = bsObject.find('table', {'class':'ItemDetailTable'})
+	#table = bsObject.find('table', {'class':'ItemDetailTable'})
+	table = bsObject.find('div', {'id':'ItemDetails'})
 	if table == None:
 		return 'Could not find table for %s' % (x)
 
