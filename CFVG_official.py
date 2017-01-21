@@ -7,9 +7,9 @@ import sys
 def main(x):
 	site = Sel_session()
 	#link results
-	results = [["Name", "Trigger", "Rarity", "Clan", "Card Number", "Shield",	"Set Name", "Power", "Unit", "Grade / Skill","Race","", "Critical", "Card Effect"]]
+	results_cd = [["Name", "Trigger", "Rarity", "Clan", "Card Number", "Shield", "Set Name", "Power", "Unit", "Grade / Skill","Race","", "Critical", "Card Effect"]]
 	#card data results
-	results_cd = []
+	results = []
 	site.go_to(x)
 	#bsObject = site.source()
 	wait = WebDriverWait(site.driver, 10)
@@ -40,15 +40,17 @@ def link_grab(x):
 
 
 def splitter(x):#is fed table
-    bsObject = S_base(x).soupmaker()
-    table = bsObject.find('div', {'id': 'cardDetail'})
-    headers = table.find_all('th')
-    d={}
-    for i in range(0, len(headers)):
-    	if headers[i].text != "Illustrator":
-    		cell = headers[i].find_next_sibling()
-    		d[re.sub('\n', '', headers[i].text)] = cleaner(cell.text, ['\n', '\r'])
-    return S_format(d).d_sort()
+	
+	print(x)
+	bsObject = S_base(x).soupmaker()
+	table = bsObject.find('div', {'id': 'cardDetail'})
+	headers = table.find_all('th')
+	d={}
+	for i in range(0, len(headers)):
+		if headers[i].text != "Illustrator":
+			cell = headers[i].find_next_sibling()
+			d[re.sub('\n', '', headers[i].text)] = cleaner(cell.text, ['\n', '\r'])
+	return S_format(d).d_sort()
 
 #test_s = S_base("http://cf-vanguard.com/en/cardlist/?cardno=G-TD09/019EN").soupmaker()
 #result = splitter(test_s)

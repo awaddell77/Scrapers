@@ -11,7 +11,10 @@ def info_links(x):#grabs the links to products' individual pages
     text_wc(new)
     return new
 def main_info(x):
-    urls = text_lc(x)
+    if '.txt' in x:
+        urls = text_lc(x)
+    else:
+        urls = info_links(x)
     results = [splitter(urls[i]) for i in range(0, len(urls))]
     w_csv(results, 'TNT1.csv')
     return results
@@ -30,7 +33,10 @@ def sorter(x):#takes bsObject grabs all the links
     return dupe_erase(l)
         
 def main_images(x):
-    urls = text_lc(x)
+    if '.txt' in x:
+        urls = text_lc(x)
+    else:
+        urls = info_links(x)
     results = [['Card Name', 'Image', 'Image Link']]
     for i in range(0, len(urls)):
         results.extend(images(urls[i],1))
@@ -69,10 +75,11 @@ def splitter(x):
         cells = p_info[i].find_all('td') #grabs all of the cells inside of the particular row
         if len(cells) == 2:
             d[spacesmash(cells[0].text)] = cells[1].text
-    results = (p_name.text, d['Figure Number:'], d['Rarity:'], image_link, d['Product Image'])
+    results = (p_name.text, d.get('Figure Number:', 'Not Available'), d.get('Rarity:','Not Available'), image_link, d.get('Product Image','Not Available'))
     return results
 
-main_images(sys.argv[1])
+if __name__ == "__main__":
+    main_images(sys.argv[1])
 
         
         

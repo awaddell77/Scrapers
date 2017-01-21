@@ -1032,7 +1032,7 @@ def con_text(x):
                 new[i] = new[i]
             else:
                 new[i] = "Not available"
-    return tuple(new)
+    return list(new)
 
 def con_text_s(x):
     #for use with a single Beautiful Soup object that has the text attribute

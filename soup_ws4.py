@@ -227,4 +227,4 @@ def text_l(x):#reads text file, returns list of elements
 if len(sys.argv) != 1:
     if sys.argv[1] == '-mt':
         main_true(sys.argv[2])
-    m_links1(sys.argv[1])F
+    m_links1(sys.argv[1])

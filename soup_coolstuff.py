@@ -1,6 +1,7 @@
 from soupclass8 import *
 from Im_dwnld import *
-import sys
+import sys, time
+
 
 def main(x):
 	urls = text_l(x)
@@ -17,7 +18,9 @@ def main_auto(x,directory="Images"):
 	if site.element_check('nextLink'):
 		results.extend(images_desc(site.source()))
 		while site.element_check('nextLink'):
+
 			site.js("document.getElementById('nextLink').children[0].click();")
+			time.sleep(5)
 			results.extend(images_desc(site.source()))
 	if results != []:
 		#loop grabs the image URLS

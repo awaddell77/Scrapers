@@ -14,8 +14,11 @@ def splitter(x):
 		image_r = elements[i].find('div', {'class':'miniboxImageStandard'}).img
 		image_link = S_format(str(image_r)).linkf('src=')
 		image_name = fn_grab(image_link)
-		new = con_text((name, rarity))
-		results.append(new + (image_link, image_name))
+		number = elements[i].find('div', {'class':'boxinfo2_num'})
+		new = con_text((name, rarity, number))
+		new[2]  = "'" + new[2] #needs to be this way in order to prevent excel from ruining it
+
+		results.append(tuple(new) + (image_link, image_name))
 	w_csv(results, "MINIS.csv")
 	return results
 
