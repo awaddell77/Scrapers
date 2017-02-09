@@ -174,6 +174,15 @@ class Sel_session(object):
         return self.driver.execute_script(x)
     def close(self):
         return self.driver.quit()
+    def is_enabled(self, prod_id):
+        #checks to see if the element is DISABLED
+        result = self.js("return 'disabled' in document.getElementById(\'{0}\').attributes".format(prod_id))
+        if result:
+            #if disabled is listed among the element's attributes returns False
+            return False
+        else:
+            return True
+
 
 
 
@@ -1046,6 +1055,18 @@ def con_text_s(x):
             return "Not Available"
     return x
 
+def dictionarify(x):
+    #should produce list of dictionaries from a csv, with the column headers as the keys
+    item = C_sort(x)
+    items = item.contents
+    crit = item.contents[0]
+    results = []
+    for i in range(1, len(items)):
+        d = dict.fromkeys(crit, 0)
+        for i_2 in range(0, len(items[i])):
+            d[crit[i_2]] = items[i][i_2]
+        results.append(d)
+    return results
 ###########################################
 
 def im_cfvg(x,y):#cardfight vanguard image set download
