@@ -7,12 +7,14 @@ test_card = {'Product Name':"This is the card's name", 'Manufacturer': 'The PokÃ
 				"Barcode Type": 'upc', "Product Id":'6339605', "MSRP":'2.10', 'Product Image': 'pkm-cardback.png', "Description":'This is the description',
 				"Keywords":"kids"}
 class Main(object):
-	def __init__(self, p_list,  *args):
-		self.p_list = conv_to_dict(p_list)
+	def __init__(self, p_list, dir_n ="C:\\Users\\Owner\\Desktop\\I\\", *args):
+		self.dir_n = dir_n
+		self.p_list = conv_to_dict(p_list, self.dir_n)
 		self.args = args
-		self.header = r_csv(p_list)[0]
+		self.header = r_csv_2(p_list, mode = 'rb', encoding = 'ISO-8859-1' )[0]
 
 	def add_single(self, x, dir_n = "C:\\Users\\Owner\\Desktop\\I\\" ):
+		n = 0
 		browser.go_to("https://catalog.amazon.com/abis/Classify/SelectCategory?itemType=collectible-single-trading-cards&productType=TOYS_AND_GAMES")
 		#name
 		browser.js("document.getElementById('item_name').value = '{0}'".format(prep(x["Product Name"])))
@@ -44,6 +46,7 @@ class Main(object):
 		time.sleep(1)
 		#Image
 		self.add_image(x["Product Image"], dir_n)
+		time.sleep(5)
 		#switch over to Description tab
 		browser.js("document.getElementById('tang_description-tab').click()")
 		time.sleep(1)
@@ -54,9 +57,29 @@ class Main(object):
 		time.sleep(1)
 		#adds keyword
 		browser.js("document.getElementById('target_audience_keywords1').value = '{0}'".format(prep(x["Keywords"])))
+		time.sleep(.5)
+		#clicks back on the vital info tab
+		browser.js("document.getElementById('tang_vital_info-tab').click()")
+		time.sleep(1)
+
+		while not browser.is_enabled("main_submit_button"):
+			n += 1
+			time.sleep(.5)
+			if n >= 20:
+				raise Amazon_Validation_Error("Amazon will not validate {0}".format(x["Product Name"]))
 		if browser.is_enabled("main_submit_button"):
 			#this is for testing only
-			#browser.js("document.getElementById('main_submit_button').click()")
+			browser.js("document.getElementById('main_submit_button').click()")
+			print("CLICKED THE SUBMIT BUTTON!")
+			load_check_abort = 0
+			#has to wait for the page to transition to the seller central page
+			while load_check('sellercentral'):
+				print("Waiting for sellercentral page")
+				load_check_abort += 1
+				time.sleep(1)
+				if load_check_abort > 30:
+					raise RuntimeError("Amazon either took too long to respond or objected to the item.")
+			print("Found sellarcentral page")
 			return True
 		else:
 			return False
@@ -72,17 +95,47 @@ class Main(object):
 		for i in range(0, len(self.p_list)):
 			try:
 				outcome = self.add_single(self.p_list[i], dir_n)
-			except: #untested
-				print("Error occurred")
+			except Amazon_Validation_Error as AVE: #untested
+				print("Error occurred:")
+				print(AVE)
+				print("Trying again but with EAN")
+				try:
+					self.p_list[i]["Barcode Type"] = 'ean'
+					outcome = self.add_single(self.p_list[i], dir_n)
+				except Amazon_Validation_Error as AVE:
+					self.p_list[i] = barcode_handling(self.p_list[i])
+					fail_list.append(S_format(self.p_list[i]).d_sort(self.header))
+
+				#self.p_list[i] = barcode_handling(self.p_list[i])
+				#fail_list.append(S_format(self.p_list[i]).d_sort(self.header))
+			except:
+				#general
+				self.p_list[i] = barcode_handling(self.p_list[i])
+				print("General Error Occurred with {0}".format(self.p_list[i]["Product Name"]))
 				fail_list.append(S_format(self.p_list[i]).d_sort(self.header))
 
-			if outcome:
-				succ_list.append(S_format(self.p_list[i]).d_sort(self.header))
 			else:
-				fail_list.append(S_format(self.p_list[i]).d_sort(self.header))
-			time.sleep(5)
+				if outcome:
+					succ_list.append(S_format(self.p_list[i]).d_sort(self.header))
+				else:
+					self.p_list[i] = barcode_handling(self.p_list[i])
+					fail_list.append(S_format(self.p_list[i]).d_sort(self.header))
+
+			time.sleep(1)
 		w_csv(succ_list, "SUCCESS LIST.csv")
 		w_csv(fail_list, "FAILED ADDS.csv")
+
+def load_check(start):
+	#checks to see if browser has switched to the sellercentral page after clicking on the save button on the item creation page
+	if browser.js('return document.readyState') != "complete" or start not in browser.driver.current_url:
+		return True
+	else:
+		return False
+def barcode_handling(x):
+	d = x 
+	d["Barcode"] = '[' + str(d["Barcode"])
+	return d
+
 
 class Crit_not_present(Exception):
 	pass
@@ -91,6 +144,8 @@ class Value_not_appr(Exception):
 	pass
 class Image_not_found(Exception):
 	#for when it cannot find the images
+	pass
+class Amazon_Validation_Error(Exception):
 	pass
 def prep(x):
 	value = x
@@ -101,6 +156,9 @@ def conv_to_dict(x, dir_n = "C:\\Users\\Owner\\Desktop\\I\\"):
 	new_x = dictionarify(x)
 	crits = ['Manufacturer', 'Product Image', 'Barcode Type', 'Barcode', 'Product Id', 'MSRP', 'Product Name', 'Description', 'Ages', 'Keywords']
 	for i_2 in range(0, len(new_x)):
+		#checks to see if Image Link is present if Product Image field is not, then creates a product image field by extracting the file name from the url
+		if "Product Image" not in list(new_x[i_2].keys()) and "Image Link" in list(new_x[i_2].keys()):
+			new_x[i_2]["Product Image"] = fn_grab(new_x[i_2]["Image Link"])
 		for i in range(0, len(crits)):
 			#checks each dict to see if they have the necessary fields
 			req_field_pres = crits[i] not in list(new_x[i_2].keys())
@@ -169,9 +227,38 @@ def image_check(x, dir_n = "C:\\Users\\Owner\\Desktop\\I\\"):
 	if not os.path.exists(full_path):
 		return False
 
+def run_prog(x):
+	x = ''
+	accept = ["Yes", 'y', 'Y']
+	exit = ["Exit", "q", "Q", 'bye', 'N', 'n']
+	while x not in accept or exit:
+		x = input("Proceed with program (Y/N)?: ")
+		if x == "END":
+			break
+	if x in accept:
+		return True
+	else:
+		return False
 
 
 
 
 
-test_inst = Main('test_adds.csv')
+#test_inst = Main('test_adds.csv')
+
+if __name__ == "__main__":
+	if sys.argv[1] == '-h':
+		print("python3 [prog_name.py] \"[csv file name]\" [-nd] [Full path to new directory for images]")
+	else:
+		m_inst = Main(sys.argv[1])
+		res = run_prog(1)
+		if res and sys.argv[2] == '-nd':
+			m_inst.add_csv(sys.argv[3])
+		elif res:
+			m_inst.add_csv()
+		else:
+			browser.close()
+
+
+
+
