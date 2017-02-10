@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup as bs
 import requests, lxml
 import unicodedata
 from PIL import Image
-import subprocess, os, csv, re, time
+import subprocess, os, csv, re, time, codecs
 import sys
 from os.path import join
 from selenium import webdriver
@@ -522,7 +522,11 @@ class S_table(object):
 class C_sort(object):#for processing CSVs
     def __init__(self, fname, other = 0):
         self.fname = fname
-        self.contents = r_csv(self.fname)
+        try:
+            self.contents = r_csv(self.fname)
+        except UnicodeDecodeError as UDE:
+            self.contents = r_csv_2(self.fname, mode = 'rb', encoding='ISO-8859-1')
+            print("Encountered Unicode Decode Error")
         self.other = other#will be used later for different file formats
     #def contents(self):
         #return r_csv(self.fname)
@@ -888,6 +892,14 @@ def dupe_erase(x):
 def r_csv(x,mode='rt'):
     l = []
     csv_in = open(x, mode, encoding = 'utf-8')
+    myreader = csv.reader(csv_in)
+    for row in myreader:
+        l.append(row)
+    csv_in.close()
+    return l
+def r_csv_2(x,mode='rt', encoding = 'utf-8'):
+    l = []
+    csv_in = codecs.open(x, mode, encoding)
     myreader = csv.reader(csv_in)
     for row in myreader:
         l.append(row)
