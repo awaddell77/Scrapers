@@ -182,6 +182,20 @@ class Sel_session(object):
             return False
         else:
             return True
+    def w_load(self, T_O = 30):
+        #waits for page to finish loading
+        count = 0
+        while True:
+            if self.driver.execute_script('return document.readyState') != "complete" and count <= T_O:
+                count += 1
+                time.sleep(1)
+            elif count > T_O:
+                break #should probably do something else
+
+            else:
+                break
+
+
 
 
 
@@ -975,6 +989,17 @@ def image_d(x,n,ext, mode = 'wb'):
 
 def w_csv(x,output='FCfile.csv'):#accepts lists of other lists, spits out CSV file
     csv_out = open(output, 'w', newline='', encoding='utf-8')
+    mywriter = csv.writer(csv_out)
+    try:
+        print("This is x: %s" % (x))
+    except UnicodeEncodeError as UE:
+        print("Cannot print to console due to Unicode Error")
+
+    mywriter.writerows(x)
+    csv_out.close()
+    return
+def w_csv_2(x,output='FCfile.csv'):#accepts lists of other lists, spits out CSV file
+    csv_out = open(output, 'w', newline='', encoding='ISO-8859-1')
     mywriter = csv.writer(csv_out)
     try:
         print("This is x: %s" % (x))

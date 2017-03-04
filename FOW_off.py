@@ -20,9 +20,30 @@ def main(x, img_d = 0):
 
 	w_csv(results)
 	return results
+def all_main(x, img_d=0):
+	url = 'http://fowtcg.com/cards/'
+	types = ['light', 'flame', 'water', 'wind', 'darkness', 'ne']
+	results = []
+	for i in range(0, len(types)):
+		full_url = url + types[i] + '/' + str(x) 
+		results.extend(main(full_url, img_d))
+	w_csv(de_dupe(results))
+	return de_dupe(results)
+
+def de_dupe(x):
+	#removes duplicates from csv files
+	#increments must be negative to avoid throwing loop off
+	for i in range(len(x)-1,0, -1):
+		#second loop starts where the first loop is currently located (i)
+		for i_2 in range(len(x)-1, i, -1):
+			if x[i][0] == x[i_2][0]:
+				x.remove(x[i])
+				print("Removing {0}".format(x[i][0]))
+	return x
 
 def splitter(x):
 	site = S_base(x).soupmaker()
+	d = {}
 	card_table = site.find('div', {'id':'main_body'})
 	card_name = site.find('td',{'class':'card_name'}).text
 	card_info_r = card_table.find('tr', {'class':'card_info'}).find_all('td')
@@ -64,7 +85,10 @@ def link_grab(x):
 		return results
 
 if len(sys.argv) > 1:
-	main(sys.argv[1])
+	if sys.argv[1] == '-m':
+		all_main(sys.argv[2])
+	else:
+		main(sys.argv[1])
 else:
 	print("[link]")
 

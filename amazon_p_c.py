@@ -6,7 +6,7 @@ browser.start()
 test_card = {'Product Name':"This is the card's name", 'Manufacturer': 'The Pokémon company', 'Ages':"12", 'Barcode':'0642645120110',
 				"Barcode Type": 'upc', "Product Id":'6339605', "MSRP":'2.10', 'Product Image': 'pkm-cardback.png', "Description":'This is the description',
 				"Keywords":"kids"}
-class Main(object):
+class Asin_Add_Main(object):
 	def __init__(self, p_list, dir_n ="C:\\Users\\Owner\\Desktop\\I\\", *args):
 		self.dir_n = dir_n
 		self.p_list = conv_to_dict(p_list, self.dir_n)
@@ -124,7 +124,6 @@ class Main(object):
 			time.sleep(1)
 		w_csv(succ_list, "SUCCESS LIST.csv")
 		w_csv(fail_list, "FAILED ADDS.csv")
-
 def load_check(start):
 	#checks to see if browser has switched to the sellercentral page after clicking on the save button on the item creation page
 	if browser.js('return document.readyState') != "complete" or start not in browser.driver.current_url:
@@ -170,7 +169,7 @@ def conv_to_dict(x, dir_n = "C:\\Users\\Owner\\Desktop\\I\\"):
 				if missing_crit:
 					raise Crit_not_present("Item #{0} is missing a required field: {1}".format(str(i_2), crits[i]))
 				if empty_field:
-					raise Crit_not_present("The {0} field in item #{1} was left blank.".format(crits[i]), str(i_2))
+					raise Crit_not_present("The {0} field in item #{1} was left blank.".format(crits[i], str(i_2)))
 		#checks to see if fields contain appropriate content (i.e. the correct type of data)
 		b_code_er, p_id_er, msrp_er = number_check(new_x[i_2]["Barcode"]), number_check(new_x[i_2]["Product Id"]), number_check(new_x[i_2]["MSRP"])
 		if b_code_er or p_id_er or msrp_er:
@@ -250,7 +249,7 @@ if __name__ == "__main__":
 	if sys.argv[1] == '-h':
 		print("python3 [prog_name.py] \"[csv file name]\" [-nd] [Full path to new directory for images]")
 	else:
-		m_inst = Main(sys.argv[1])
+		m_inst = Asin_Add_Main(sys.argv[1])
 		res = run_prog(1)
 		if res and sys.argv[2] == '-nd':
 			m_inst.add_csv(sys.argv[3])

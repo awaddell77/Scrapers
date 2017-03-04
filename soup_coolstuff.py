@@ -25,7 +25,7 @@ def main_auto(x,directory="Images"):
 	if results != []:
 		#loop grabs the image URLS
 		#d_links = [results[i][1] for i in range(0, len(results))]
-		d_links = [results[i][3] for i in range(0, len(results))]
+		d_links = [re.sub('/c_pad,h_1\d\d,w_1\d\d', '', results[i][3]) for i in range(0, len(results))]
 		#downloads the images
 		Im_dwnld(directory).i_main(d_links)
 

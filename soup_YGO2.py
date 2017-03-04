@@ -18,7 +18,7 @@ def main(x, links=0):#batch
         urls = x
     else: 
         urls  = text_l(x)
-    t_results = [['Name', 'ATK/DEF', 'Monster Type','Card Type', 'Passcode', 'Level','Attribute','Card Text','Set']]
+    t_results = [['Name', 'ATK/DEF', 'Monster Type','Card Type', 'Set', 'Level', 'Attribute', 'Passcode', 'Card Text']]
     for i in range(0, len(urls)):
         bsObject = soupmaker(urls[i])
         a_table = sfind(bsObject)
