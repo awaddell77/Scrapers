@@ -12,6 +12,7 @@ class Asin_Add_Main(object):
 		self.p_list = conv_to_dict(p_list, self.dir_n)
 		self.args = args
 		self.header = r_csv_2(p_list, mode = 'rb', encoding = 'ISO-8859-1' )[0]
+		self.asins = []
 
 	def add_single(self, x, dir_n = "C:\\Users\\Owner\\Desktop\\I\\" ):
 		n = 0
@@ -124,6 +125,41 @@ class Asin_Add_Main(object):
 			time.sleep(1)
 		w_csv(succ_list, "SUCCESS LIST.csv")
 		w_csv(fail_list, "FAILED ADDS.csv")
+	def retrieve_asins(self):
+		for i in range(0, len(self.p_list)):
+			self.asins.append(self.grab_asin(self.p_list[i]["Product Id"]))
+		w_csv(self.asins, "ASIN_list.csv")
+	def grab_asin(self, name):
+		wait = 3
+		#retrieves ASIN that has already been created. Need product id.
+		#name == Product Id or Item Sku on Amazon 
+		#needs to be on the "Manage Inventory" page
+		#name = re.sub("'", "39;", name) #used to be \\'
+		try:
+			int(name)
+		except ValueError as VE:
+			name = re.sub("'", rep, name)
+			if "Foil" not in name:
+				name_1 = name + " NOT Foil"
+			else:
+				name_1 = name
+		else:
+			name_1 = str(name)
+
+		browser.js("document.getElementById('myitable-search').value ='" + name_1 + "' ;")
+		browser.js("document.getElementById('myitable-search-button').children[0].children[0].click();")
+		time.sleep(wait)
+		site = browser.source()
+		#ASIN = browser.js("return document.getElementById('NjIzMjk2Mw_e_e-title-asin').children[0].children[0].innerHTML;")
+		try:
+			ASIN = re.sub('\n', '', site.find('div', {'data-column':'asin'}).text).strip()
+		except TypeError as TE:
+			return [name, "No ASIN found"]
+		except AttributeError as AE:
+			return [name, "No ASIN returned"]
+		else:
+			return [name, ASIN]
+
 def load_check(start):
 	#checks to see if browser has switched to the sellercentral page after clicking on the save button on the item creation page
 	if browser.js('return document.readyState') != "complete" or start not in browser.driver.current_url:
