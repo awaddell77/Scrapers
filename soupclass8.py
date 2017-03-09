@@ -102,7 +102,13 @@ class S_base(object):
 
 
 
-            
+    def soupmaker_bot(self):
+        headers = {'User-Agent':'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'}
+        html = requests.get(self.url, headers=headers)
+        html = html.content
+        bsObject = bs(html, 'lxml')
+        return bsObject
+
 
     def stealth_smaker(self):
         headers = {'User-Agent': 'Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405'}
@@ -368,6 +374,8 @@ class S_format(object):
         x = self.s
         if attrs != 0:
             x = re.sub('<a','', x)#strips the tag from the string, helps in certain situations where the location of the link changes in between elements
+        elif type(attrs) == str:
+            x = re.sub(attrs, '', x)
         ln_s = x.split(default)
         for i in range(0, len(ln_s)):
             if ln_s[i] == n or ln_s[i] == ' %s' % (n):
@@ -1104,6 +1112,23 @@ def dictionarify(x):
             d[crit[i_2]] = items[i][i_2]
         results.append(d)
     return results
+def date_form():
+    #returns the current date in the YYYY-MM-DD HH:MM:SS required by the datetime data type in mysql
+    full_dt = time.localtime()
+    year = str(full_dt[0])
+    month = leading_zero(full_dt[1],2)
+    day = leading_zero(full_dt[2], 2)
+    hour = leading_zero(full_dt[3],2)
+    minutes = leading_zero(full_dt[4], 2)
+    seconds = leading_zero(full_dt[5],2)
+    date_time = "{0}-{1}-{2} {3}:{4}:{5}".format(year, month, day, hour, minutes, seconds)
+    return date_time
+def leading_zero(x, length):
+    if len(str(x)) < length:
+        return "0" + str(x)
+    else:
+        return str(x)
+
 ###########################################
 
 def im_cfvg(x,y):#cardfight vanguard image set download
