@@ -22,6 +22,8 @@ def main_auto(x,directory="Images"):
 			site.js("document.getElementById('nextLink').children[0].click();")
 			time.sleep(5)
 			results.extend(images_desc(site.source()))
+	else:
+		results.extend(images_desc(site.source()))
 	if results != []:
 		#loop grabs the image URLS
 		#d_links = [results[i][1] for i in range(0, len(results))]
@@ -77,8 +79,11 @@ def images_desc(x):
 	results = []
 	table = site.find('table', {'class':'vt mySearch'})
 	rows = table.find_all('tr', {'itemtype':'http://schema.org/Product'})
-	for i in range(1, len(rows)):
-		results.append(splitter(rows[i]))
+	for i in range(0, len(rows)):
+		try:
+			results.append(splitter(rows[i]))
+		except:
+			results.append(("N/A"))
 	return results
 
 

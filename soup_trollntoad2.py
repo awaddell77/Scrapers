@@ -8,13 +8,10 @@ def info_links(x):#grabs the links to products' individual pages
     site = S_base(x).soupmaker()
     links_r = site.find_all('div', {'class':'cat_result_text'})
     new = [S_format(str(links_r[i].a)).linkf('<a href=', 'http://www.trollandtoad.com') for i in range(0, len(links_r))]
-    text_wc(new)
+    #text_wc(new)
     return new
 def main_info(x):
-    if '.txt' in x:
-        urls = text_lc(x)
-    else:
-        urls = info_links(x)
+    urls = info_links(x)
     results = [splitter(urls[i]) for i in range(0, len(urls))]
     w_csv(results, 'TNT1.csv')
     return results
@@ -33,10 +30,7 @@ def sorter(x):#takes bsObject grabs all the links
     return dupe_erase(l)
         
 def main_images(x):
-    if '.txt' in x:
-        urls = text_lc(x)
-    else:
-        urls = info_links(x)
+    urls = info_links(x)
     results = [['Card Name', 'Image', 'Image Link']]
     for i in range(0, len(urls)):
         results.extend(images(urls[i],1))

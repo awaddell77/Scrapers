@@ -10,7 +10,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from dir_man import *
 
 '''VERSION NOTES:
 2/17/2016
@@ -1128,6 +1127,26 @@ def leading_zero(x, length):
         return "0" + str(x)
     else:
         return str(x)
+def proper_cap(x, acros = []):
+    if type(acros) != list or type(acros) != tuple:
+        raise TypeError("Acronym argument must be list")
+    #x is a string
+    x = str(x)
+    contents = x.split(' ')
+    for i in contents:
+        if i not in acros:
+            i = i.title()
+    return ' '.join(contents)
+def dir_change(x):
+    current = os.getcwd()
+    if current == x:
+        print("%s is already the Current Working Directory" % (x))
+    else:
+        os.chdir(x)
+        print("Working Directory has been changed from %s to %s" % (current, x))
+
+
+
 
 ###########################################
 

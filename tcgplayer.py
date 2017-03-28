@@ -61,7 +61,7 @@ def link_collector():
 
 
 
-def main_magic_full(x, total = 0):
+def main_magic_full(x,color= 0, total = 0):
 	browser.go_to(x)
 	results = [["Name", "Card Type", "Pow/Tgh", "Rarity", "Card Number", "Card Text", "Set Name", "Color", "Finish", "Cost", "Artist"]]
 	links = []
@@ -108,7 +108,7 @@ def main_fow_full(x, total = 0):
 	return results
 
 #test = main_magic_full("http://shop.tcgplayer.com/magic/modern-masters-2017?ProductType=Singles")
-test = main_fow_full("http://shop.tcgplayer.com/force-of-will/return-of-the-dragon-emperor")
+#test = main_fow_full("http://shop.tcgplayer.com/force-of-will/return-of-the-dragon-emperor")
 
 
 
@@ -131,3 +131,8 @@ def new_find(new, old):
 
 
 
+if __name__ == "__main__":
+	if sys.argv[1] == "-magic":
+		main_magic_full(sys.argv[2])
+	elif sys.argv[1] == '-fow':
+		main_fow_full(sys.argv[2])
