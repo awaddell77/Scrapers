@@ -42,6 +42,7 @@ def table_links(x):
 	table = site.find('div', {'id':'expansionDetail_table'})
 	links_r = S_table(table).table_eater_exp('a',2,5)
 	new = ["http://ws-tcg.com/en/cardlist/list" + re.sub('\./','/', S_format(str(links_r[i])).linkf('<a href=')) for i in range(0, len(links_r))]
+	new.remove('http://ws-tcg.com/en/cardlist/listNone')
 	return new
 if len(sys.argv) != 1:
 	link_grab(sys.argv[1])
