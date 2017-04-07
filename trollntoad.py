@@ -43,6 +43,7 @@ class Tnt:
 			self.__dlinks.append(image_link)
 		return self.get_page_res()
 	def m_csv(self):
+		#produces CSV and downloads images if d_opt is True
 		headers = [["Product Name", "Product Image", "Image Link"]]
 		new_lst = headers + self.get_page_res() 
 		w_csv(new_lst, "tntfile.csv")
@@ -59,4 +60,14 @@ test_inst.m_csv()'''
 
 
 
-
+if __name__ == "__main__":
+	if sys.argv[1] in ['-h', '?', 'help', '-help', '-?']:
+		print("-t (if -t it will download images to directory) dir [if -t] url")
+	if sys.argv[1] == '-t':
+		tnt_inst = Tnt(sys.argv[3])
+		tnt_inst.set_d_opt(True)
+		tnt_inst.set_folder(sys.argv[2])
+	elif sys.argv[1] != '-t':
+		tnt_inst.url = sys.argv[2]
+	tnt_inst.page_scrape()
+	tnt_inst.m_csv()

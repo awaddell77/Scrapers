@@ -8,8 +8,11 @@ browser = Sel_session('http://www.tcgplayer.com/')
 browser.start()
 magic_crit = ["Name", "Card Type:", "P / T:", "Rarity", "Card Number", "Description:", "Set Name:", "Color", "Product Image"]
 fow_crit = ["Name", "Type:", "Atk / Def:", "Rarity", "Card Number", "Description:", "Set Name:", "Attribute:", "Cost:", "Race:"]
+ws_crit = ["Name", "Rarity", "Card Number", "Level:", "Cost:", "Soul:", "Card Type:", "Trait:", "Color:", "Power:", "Trigger:", "Description:", "Product Image"]
 results = [["Name", "Card Type", "Pow/Tgh", "Rarity", "Card Number", "Card Text", "Set Name", "Finish", "Color", "Cost", "Artist"]]
 results_fow = [["Name", "Card Type", "ATK/DEF", "Rarity", "Card Number", "Card Effect", "Set Name", "Attribute", "Cost", "Race"]]
+results_ws = [["Name", "Rarity", "Card Number", "Level", "Cost", "Soul", "Card Type", "Trait", "Color", "Power", "Trigger", "Description"]]
+
 def splitter_fow(x, color = 0):
 	d = {}
 	browser.go_to(x)
@@ -61,6 +64,34 @@ def splitter_magic(x, color = 0):
 
 	return S_format(d).d_sort(magic_crit)
 
+def splitter_ws(x, color = 0):
+	d = {}
+	browser.go_to(x)
+	browser.w_load(30)
+	print("Processing {0}".format(x))
+	site = browser.source()
+	d["Name"] = site.find('div', {'class':'cardDetails'}).h1.text
+	table = site.find('div', {'class':'cardDetails'}).table
+	rows = table.find_all('tr')
+	image_link = S_format(str(site.find('div', {'class':'detailImage'}))).linkf('src=', 0, '<img')
+	d["Product Image"] = fn_grab(image_link)
+	d["Image Link"] = image_link
+	if color != 0:
+		d["Color"] = color
+	for i in range(0, len(rows)):
+		if rows[i].find('td').text == 'Rarity / #:':
+			contents = re.sub('\n', ' ', rows[i].find('td').find_next('td').text).split('/')
+			d['Rarity'] = contents[0].strip(' ')
+			card_num = '/'.join(contents[1:]).strip(' ')
+			#TCG Player adds the rarity onto the end of the number
+			d['Card Number'] = card_num.split(' ')[0]
+
+		else:
+			d[re.sub('\n', ' ' , rows[i].find('td').text)] = re.sub('\n', '', rows[i].find('td').find_next('td').text).strip(' ')
+	dwnld_obj = Im_dwnld('WS Set')
+	dwnld_obj.i_main([image_link])
+
+	return S_format(d).d_sort(ws_crit)
 
 def link_collector():
 	#grabs all the links on a single results page on TCG Player
@@ -118,6 +149,31 @@ def main_fow_full(x, total = 0):
 		results_fow.append(splitter_fow(links[i]))
 	w_csv(results_fow, 'tcgplayer.csv')
 	return results
+def main_ws_full(x, total = 0):
+	browser.go_to(x)
+	links = []
+	while True:
+		#gets links for the entire set
+		time.sleep(2)
+		links.extend(link_collector())
+		if browser.driver.execute_script("return document.getElementsByClassName('nextPage')[0].getAttribute('disabled')") == "disabled":
+			break
+		else:
+			try: 
+				browser.driver.execute_script("document.getElementsByClassName('nextPage')[0].click()")
+			except:
+				browser.driver.refresh()
+	if total != 0 and len(links) < total:
+		print("Found less than the total")
+		return results
+
+
+	for i in range(0, len(links)):
+		results_ws.append(splitter_ws(links[i]))
+	w_csv(results_ws, 'tcgplayer_ws.csv')
+	browser.close()
+	return results
+
 
 #test = main_magic_full("http://shop.tcgplayer.com/magic/modern-masters-2017?ProductType=Singles")
 #test = main_fow_full("http://shop.tcgplayer.com/force-of-will/return-of-the-dragon-emperor")
@@ -148,3 +204,5 @@ if __name__ == "__main__":
 		main_magic_full(sys.argv[2])
 	elif sys.argv[1] == '-fow':
 		main_fow_full(sys.argv[2])
+	elif sys.argv[1] == '-ws':
+		main_ws_full(sys.argv[2])
