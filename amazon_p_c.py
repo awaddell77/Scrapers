@@ -13,6 +13,10 @@ class Asin_Add_Main(object):
 		self.args = args
 		self.header = r_csv_2(p_list, mode = 'rb', encoding = 'ISO-8859-1' )[0]
 		self.asins = []
+	def get_asins(self):
+		return self.asins
+	def clear_asins(self):
+		self.asins = []
 
 	def add_single(self, x, dir_n = "C:\\Users\\Owner\\Desktop\\I\\" ):
 		n = 0
@@ -86,6 +90,8 @@ class Asin_Add_Main(object):
 			return False
 
 	def add_image(self, x, dir_n= "C:\\Users\\Owner\\Desktop\\I\\"):
+		if "http://" in x:
+			x = fn_grab(x)
 		x =  dir_n + x
 
 		browser.js("return document.getElementById('Parent-ProductImage_MAIN-div').children[2].getElementsByTagName('input')[10]").send_keys(x)
