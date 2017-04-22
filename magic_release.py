@@ -1,6 +1,6 @@
 from soupclass8 import *
 from Im_dwnld import *
-
+import sys
 class Magic_release:
 	def __init__(self, url, n_dir):
 		self.url = url
@@ -38,27 +38,29 @@ class Magic_release:
 
 
 
-
-
-
-
-
-
-
 	def splitter(self, x, color):
 		items = x.find_all('div', {'class':'resizing-cig'})
 		results = []
 		for i in range(0, len(items)):
 			d = {}
-			d["Name"] = re.sub('\n', '', items[i].text)
+			d["Name"] = self.name_form(items[i].text)
 			d["Image Link"] =  S_format(str(items[i].img)).linkf('src=')
 			d["Product Image"] = fn_grab(d["Image Link"])
 			d["Color"] = color
 			results.append(S_format(d).d_sort(self.crit))
 		return results
+	def name_form(self, x):
+		name = re.sub('’', "'", x)
+		name = re.sub("\n", '', name)
+		name = re.sub("///", '//', name)
+		return name
+
+
+if __name__ == "__main__":
+	m_inst = Magic_release(sys.argv[1], sys.argv[2])
+	m_inst.grab_cards(1)
 
 
 
-
-test = Magic_release('http://magic.wizards.com/en/articles/archive/card-image-gallery/modern-masters-2017-edition', "Modern Masters")
-res = test.grab_cards()
+#test = Magic_release('http://magic.wizards.com/en/articles/archive/card-image-gallery/modern-masters-2017-edition', "Modern Masters")
+#res = test.grab_cards()

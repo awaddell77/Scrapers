@@ -1,7 +1,7 @@
 import lxml, requests
 from bs4 import BeautifulSoup as bs
 import csv
-from soupclass8 import *
+from soupclass8_no_uni import *
 import sys
 '''NOTES: 2/10/2016
 -
@@ -204,4 +204,9 @@ if len(sys.argv) > 1:
     if sys.argv[1] == '-b':
         main(sys.argv[2])
     elif sys.argv[1] == '-t':
-        main(ygo_link_grab(sys.argv[2], sys.argv[3]), 1)
+        try:
+            main(ygo_link_grab(sys.argv[2], sys.argv[3]), 1)
+        except:
+            #sets cell param to 5 in ygo_link_grab function if there is an error
+            #need to be more specific
+            main(ygo_link_grab(sys.argv[2], sys.argv[3], 5), 1)

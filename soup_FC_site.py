@@ -11,7 +11,7 @@ def main(x):
 	results = [['Name', 'Power', 'Type', 'Attribute', 'Set Name', 'Card Number', 'Defense', 'Ability', 'Critical', 'World', 'Rarity', 'Size', 'Product Image' ]]
 	for i in range(0, len(urls)):
 		results.append(splitter(urls[i]))
-	w_csv_2(results)
+	w_csv(results)
 	return results
 
 def splitter(x):

@@ -13,11 +13,12 @@ class Db_mngmnt(object):
 		self.host = host
 		self.con = mysql.connector.connect(user=self.user, password=self.password, host=self.host, database=self.database)
 		self.cursor = self.con.cursor(buffered = True)
+		self.last_resp = ''
 	
-	def login(self):
-		cnx = mysql.connector.connect(user=self.user, password=self.password, host=self.host, database=self.database)
-		cursor = cnx.cursor(buffered = True)
-		return cursor
+	def reconnect(self):
+		self.con = mysql.connector.connect(user=self.user, password=self.password, host=self.host, database=self.database)
+		self.cursor = cnx.cursor(buffered = True)
+		#return cursor
 
 	def import_data(self, fname):
 		info = C_sort(fname)
@@ -85,9 +86,60 @@ class Db_mngmnt(object):
 	def query(self, x):
 		self.cursor.execute(x)
 		rows = self.cursor.fetchall()
+		self.last_resp = rows
 		return rows
+	def query_multi(self, x):
+		self.cursor.execute(x, multi=True)
+		rows = self.cursor.fetchall()
+		self.last_resp = rows
+		return rows
+	def __comm(self, command, query = 0):
+		#does not add response to last_resp data field
+		self.cursor.execute(x)
+		if query == 0:
+			self.con.commit
+		else:
+			rows = self.cursor.fetchall()
+			return rows
+	def cust_com(self, x):
+		self.cursor.execute(x)
+		self.con.commit()
+	def copy_row(self, x):
+		pass
+	def retr_columns(self, table, dtypes = 0):
+		#retrieves the column names, returns them in a list
+		#if dtypes is not 0 then it returns them in a list of tuples (column name, data type)
 
+		resp = self.query("SHOW COLUMNS from {0};".format(table))
+		if dtypes == 0:
+			columns = [i[0] for i in resp]
+			return columns
+		else:
+			results = []
+			for i in resp:
+				results.append((i[0], i[1]))
+			return results
+	def tables(self):
+		resp = self.__comm("SHOW tables;", 1)
+		tables = [i[0] for i in resp]
+		return tables
 
+	def date_form(self):
+	    #returns the current date in the YYYY-MM-DD HH:MM:SS required by the datetime data type in mysql
+	    full_dt = time.localtime()
+	    year = str(full_dt[0])
+	    month = self.leading_zero(full_dt[1],2)
+	    day = self.leading_zero(full_dt[2], 2)
+	    hour = self.leading_zero(full_dt[3],2)
+	    minutes = self.leading_zero(full_dt[4], 2)
+	    seconds = self.leading_zero(full_dt[5],2)
+	    date_time = "{0}-{1}-{2} {3}:{4}:{5}".format(year, month, day, hour, minutes, seconds)
+	    return date_time
+	def leading_zero(self, x, length):
+	    if len(str(x)) < length:
+	        return "0" + str(x)
+	    else:
+	        return str(x)
 
 def string_cleanse(x):
 	new = re.sub('"', '', x)

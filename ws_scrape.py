@@ -96,10 +96,12 @@ class Ws_scrape:
 	    results = [['Card Name','Power', 'Type', 'Color', 'Card Text', 'Level', 'Soul', 'Rarity', 'Trigger', 'Traits', 'Cost', 'Card Number', 'Side', 'Expansion']]
 	    for i in range(0, len(urls)):
 	        #iterates through all of the fresh links
-	        print("Now Processing %s" % urls[i])
-	        bsObject = self.test(S_base(urls[i]).soupmaker())
-	        results.append(self.stsc(bsObject))
-	    self.set_scrape_res = results
+	        
+	        if "listNone" not in urls[i]:
+	        	print("Now Processing %s" % urls[i])
+	        	bsObject = self.test(S_base(urls[i]).soupmaker())
+	        	results.append(self.stsc(bsObject))
+	    self.set_scrape_res(results)
 	    w_csv(results)
 	    print("Complete")
 	    return results

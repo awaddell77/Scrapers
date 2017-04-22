@@ -1,14 +1,18 @@
+import csv
 class C_sort(object):#for processing CSVs
     def __init__(self, fname, other = 0):
         self.fname = fname
+        self.delimiter = ','
         try:
-            self.contents = r_csv(self.fname)
+            self.contents = r_csv(self.fname, mode= 'rt', delim= self.delimiter )
         except UnicodeDecodeError as UDE:
             self.contents = r_csv_2(self.fname, mode = 'rb', encoding='ISO-8859-1')
             print("Encountered Unicode Decode Error")
         self.other = other#will be used later for different file formats
     #def contents(self):
         #return r_csv(self.fname)
+    def set_delim(self, x):
+        self.delimeter = x
     def column(self, n):
         return self.col_grab(n)
     def row(self, n):
@@ -176,10 +180,10 @@ class C_sort(object):#for processing CSVs
                 x[i] = x[i].upper()
             #elif x[i] == 
         
-def r_csv(x,mode='rt'):
+def r_csv(x,mode='rt', delim = ','):
     l = []
     csv_in = open(x, mode, encoding = 'utf-8')
-    myreader = csv.reader(csv_in)
+    myreader = csv.reader(csv_in, delimiter = delim)
     for row in myreader:
         l.append(row)
     csv_in.close()
