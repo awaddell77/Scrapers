@@ -7,7 +7,7 @@ class Magic_scrape:
 		self.session = Sel_session(url)
 		self.session.start()
 		self.cards = []
-		self.headers = ["Name", "Card Type", "Pow / Tgh", "Card Text", "Rarity"]
+		self.headers = ["Name", "Card Type", "Pow / Tgh", "Card Text", "Rarity", "Image Link"]
 
 	def page_scrape(self):
 		site = self.session.source()
@@ -34,10 +34,19 @@ class Magic_scrape:
 		else:
 			d["Card Type"] = re.sub('\n', '', type_attack).strip(' ')
 			d["Pow / Tgh"] = ''
-		d["Card Text"] = re.sub('\n', ' ', card_info.find('div', {'class':'rulesText'}).text)
+		d["Card Text"] = self.paragraph_form(card_info.find('div', {'class':'rulesText'})).text.replace('\n', ' ')
 		rarity = S_format(str(x.find('td', {'class':'rightCol setVersions'}).find('div',{'class':'rightCol'}).img)).linkf('<img alt=')
 		d["Rarity"] = self.rarity_find(rarity)
+		image_r = x.find('img')
+		d["Image Link"] = ''
+		if image_r is not None:
+			d["Image Link"] = "http://gatherer.wizards.com/" + S_format(str(image_r)).linkf('src=').replace('../', '')
 		return d
+	def paragraph_form(self, x):
+		if x.find('p') is not None:
+			for i in x.find_all('p'):
+				i.insert_after(' ')
+		return x
 	def m_csv(self):
 		results = []
 		results.append(self.headers)

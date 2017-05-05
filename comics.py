@@ -4,12 +4,13 @@ from r_csv_sa import *
 from Im_dwnld import *
 import re
 from soupclass8 import w_csv, S_format
-
+from Cat_dbase import *
 
 class Comic:
 	def __init__(self, fname = '', fname2 = ''):
 		self.master = fname
 		self.preview = fname2
+		self.cat_obj = Cat_dbase()
 		self.r_data = ''
 		self.preview_data = ''
 		self.comic_data = []
@@ -85,9 +86,23 @@ class Comic:
 		d["Colorist"] = x.get("COLORIST")
 		d["Product Image"] = x.get("STOCK_NO") + ".jpg"
 		d["Product Image Link"] = self.dwnld_image(x.get("STOCK_NO"))
+		#fixes product name
+		d["Product Name"] = self.p_name_fix(d)
 		return d
+	def dupe_check(self):
+		for i in self.comic_data:
+			#res = self.cat_obj.query("SELECT " i["DIAMD_NO"]
+			pass
+		pass
 
-		
+	def p_name_fix(self, x):
+		#takes dict, if product name is already in catalog it adds diamond number to the name
+		if self.cat_obj.is_in_cat("name", x["Product Name"], '2575'):
+			#print("FOUND DUPLICATE")
+			new_name = x["Product Name"] + " (" + x.get("DIAMD NO", str(time.localtime()[0])) + ")"
+			return new_name
+		else:
+			return x["Product Name"]
 	def get_description(self, x):
 		for i in self.preview_data:
 			if i["DIAMD_NO"] == x:
@@ -104,15 +119,17 @@ class Comic:
 		if not x:
 			#if x is empty string it will return x as empty string
 			return ''
-		return self.genre_dict[str(x)]
+		return self.genre_dict.get(str(x), str(x))
 	def text_fix(self, x):
 		x = str(x).title()
 		x = str(x).replace(' Hc ', " HC ")
 		x = str(x).replace('Dc ', "DC ")
 		x = str(x).replace('Nd ', 'nd ')
+		x = str(x).replace('Ii ', 'II')
 
 		x = x.replace("'S", "'s")
 		x = re.sub("\(C: \d-\d-\d\)", '', x)
+		x = re.sub("\(C: \d-\d-\d", '', x)
 		return x
 
 	def dwnld_image(self, x):

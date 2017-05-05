@@ -23,7 +23,6 @@ class Cat_dbase(Db_mngmnt):
 			raise TypeError("Argument must be bool")
 		else:
 			self.__proper_desc = x
-			
 	def get_product(self, p_id, base_desc = False):
 		#uses product id only
 		#if base_desc is True then it returns only the non-product type specific descriptors such as asin and manufacturer sku
@@ -106,6 +105,7 @@ class Cat_dbase(Db_mngmnt):
 		x["Product Image Link"] = "https://crystalcommerce-assets.s3.amazonaws.com/photos/" + str(x["Product Id"]) + '/' + str(x["Product Image"])
 		x["Product Type"] = x['product type']
 		x["Category Name"] = x['category_name']
+		x["Category"] = x['category_name']
 		#may need to create new dict that doesn't have all the improperly named keys in the future if size becomes an issue
 		return x
 	def asin_check(self, p_id):
@@ -115,6 +115,18 @@ class Cat_dbase(Db_mngmnt):
 			return False
 		else:
 			return True
+	def is_in_cat(self, desc, value, category = ''):
+		#returns TRUE if an identical desc value is already in catalog
+		if category:
+			res = self.query("SELECT id FROM products WHERE {0} = \"{1}\" AND category_id = \"{2}\";".format(str(desc), str(value), str(category)))
+		elif not category:
+			res = self.query("SELECT id FROM products WHERE {0} = \"{1}\";".format(str(desc), str(value)))
+		if not res:
+			#if empty it returns false
+			return False
+		else:
+			return True
+
 	def cat_need_asin(self, cat_id):
 		need_asins_lst = []
 		res = self.get_category_contents(cat_id, True)
@@ -135,8 +147,14 @@ class Cat_dbase(Db_mngmnt):
 		print("Found {0} new products".format(len(unique_items)))
 		return unique_items
 	def update_product(self, p_id, descr, value):
-		print("Updating Product {0}".format(p_id))
+		print("Updating Product {0} with {1}".format(p_id, value))
 		self.cust_com('UPDATE products SET {0} = \"{1}\" WHERE id = \"{2}\";'.format(descr, value, p_id))
+	def child_cats(self, parent_cat):
+		res = self.query("SELECT id FROM categories WHERE ancestry = \"188/{0}\"".format(str(parent_cat)))
+		if not res:
+			res = self.tup_to_lst(res)
+			return res
+
 
 
 
