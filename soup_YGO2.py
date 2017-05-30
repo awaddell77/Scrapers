@@ -210,3 +210,7 @@ if len(sys.argv) > 1:
             #sets cell param to 5 in ygo_link_grab function if there is an error
             #need to be more specific
             main(ygo_link_grab(sys.argv[2], sys.argv[3], 5), 1)
+    else:
+        print("Use one of the following:")
+        print("-b [file containing links to individual cards]")
+        print("-t [url] [name of a card in the card table]")

@@ -154,6 +154,17 @@ class Cat_dbase(Db_mngmnt):
 		if not res:
 			res = self.tup_to_lst(res)
 			return res
+	def get_mapping(self, cat_id):
+		#converts input into a list with a single str entry
+		#useful when manipulating the object using python shell
+		if not isinstance(cat_id, list):
+			cat_id = [str(cat_id)]
+		for i in cat_id:
+			pass
+
+
+
+
 
 
 

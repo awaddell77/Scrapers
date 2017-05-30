@@ -12,7 +12,7 @@ def splitter(x):
 		rarity = elements[i].find('div', {'class':'boxrarity'})
 		name = elements[i].find('div', {'class':'boxname_normal'})
 		image_r = elements[i].find('div', {'class':'miniboxImageStandard'}).img
-		image_link = S_format(str(image_r)).linkf('src=')
+		image_link = "http://www.pathfinderminis.com/" + S_format(str(image_r)).linkf('src=')
 		image_name = fn_grab(image_link)
 		number = elements[i].find('div', {'class':'boxinfo2_num'})
 		new = con_text((name, rarity, number))

@@ -20,7 +20,10 @@ def main_auto(x,directory="Images"):
 		while site.element_check('nextLink'):
 
 			site.js("document.getElementById('nextLink').children[0].click();")
-			time.sleep(5)
+			try:
+				time.sleep(5)
+			except KeyboardInterrupt as KE:
+				break
 			results.extend(images_desc(site.source()))
 	else:
 		results.extend(images_desc(site.source()))
