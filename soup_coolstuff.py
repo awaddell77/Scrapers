@@ -2,6 +2,8 @@ from soupclass8 import *
 from Im_dwnld import *
 import sys, time
 
+#var for handling heroclix
+h_var = False
 
 def main(x):
 	urls = text_l(x)
@@ -100,6 +102,10 @@ def splitter(x):
 	image_info = splitter_images(image_r)
 	name = con_text_s(item.find('td', {'class':'vm description'}).find('h3'))
 	number = re.sub('Notes: ', '', con_text_s(item.find('div', {'class':'sSec'}).find('p', {'class':'pNotes'})))
+	if h_var:
+		number = name.split(" - ")[0].split(',')[0]
+		rarity = name.split(" - ")[0].split(',')[len(name.split(" - ")[0].split(','))-1]
+		return (name, number, rarity, image_info) 
 	results = (name, number) + image_info
 	return results
 
@@ -128,6 +134,9 @@ def splitter_images(x):
 if len(sys.argv) != 1:
 	if sys.argv[1] == '-a':
 
+		main_auto(sys.argv[2], sys.argv[3])
+	elif sys.argv[1] == '-ah':
+		h = True
 		main_auto(sys.argv[2], sys.argv[3])
 	
 

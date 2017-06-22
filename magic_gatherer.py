@@ -99,7 +99,7 @@ class Magic_scrape:
 				cost += colors[element]
 		for i in cost:
 			#if i isn't a number and color has not been set
-			if i == 'C':
+			if i == 'C' or i == 'X':
 				color = ''
 			if not i.isdigit() and not color:
 				color = i
@@ -118,10 +118,10 @@ class Magic_scrape:
 				color = "ElseMulti-Color"
 				return (cost, color)'''
 		#possibly redundant return statement
-		return (cost, color)
-
-
-
+		return (cost, self.color_trans(color))
+	def color_trans(self, x):
+		color_d = {'G':'Green', 'R':'Red', "B":"Black", "U":"Blue", "W":"White", "Colorless":"C", "Variable Colorless":"X", "Multi-Color":"Multi-Color"}
+		return color_d[x]
 
 
 	def paragraph_form(self, x):
@@ -166,6 +166,13 @@ class Magic_scrape:
 			if res != None:
 				return i[0]
 		return 'Rarity Not Found'
+	def sort_cards(self):
+		#sorts the cards in the state
+		self.cards = self.sort_output()
+
+	def sort_output(self):
+		#for now it will sort cards alphabetically by name
+		return sorted(self.cards, key= lambda a: a['Name']) 
 
 
 

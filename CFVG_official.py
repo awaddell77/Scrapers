@@ -3,11 +3,11 @@ from soupclass8 import *
 import sys
 
 
-
+crit = ["Card Name", "Trigger", "Rarity", "Clan", "Card No.", "Shield", "Expansion", "Power", "Unit", "Grade","Race","Critical", "Text"]
 def main(x):
 	site = Sel_session()
 	#link results
-	results_cd = [["Name", "Trigger", "Rarity", "Clan", "Card Number", "Shield", "Set Name", "Power", "Unit", "Grade / Skill","Race","", "Critical", "Card Effect"]]
+	results_cd = [["Name", "Trigger", "Rarity", "Clan", "Card Number", "Shield", "Set Name", "Power", "Unit", "Grade / Skill","Race","Critical", "Card Effect"]]
 	#card data results
 	results = []
 	site.go_to(x)
@@ -50,7 +50,7 @@ def splitter(x):#is fed table
 		if headers[i].text != "Illustrator":
 			cell = headers[i].find_next_sibling()
 			d[re.sub('\n', '', headers[i].text)] = cleaner(cell.text, ['\n', '\r'])
-	return S_format(d).d_sort()
+	return S_format(d).d_sort(crit)
 
 #test_s = S_base("http://cf-vanguard.com/en/cardlist/?cardno=G-TD09/019EN").soupmaker()
 #result = splitter(test_s)

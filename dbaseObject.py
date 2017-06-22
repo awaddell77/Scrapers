@@ -3,6 +3,7 @@ import re
 from soupclass8 import C_sort,r_csv
 import csv
 import mysql.connector
+import time
 
 print("mysql.connector.connect(user='username', password='passsword', host='127.0.0.1', database='database_name'")
 class Db_mngmnt(object):
@@ -95,7 +96,7 @@ class Db_mngmnt(object):
 		return rows
 	def __comm(self, command, query = 0):
 		#does not add response to last_resp data field
-		self.cursor.execute(x)
+		self.cursor.execute(command)
 		if query == 0:
 			self.con.commit
 		else:

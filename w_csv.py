@@ -1,6 +1,6 @@
 #writes csv
 import csv
-
+import os
 
 def w_csv(x,output='FCfile.csv'):
     #accepts lists of other lists, spits out CSV file
@@ -22,3 +22,11 @@ def w_csv(x,output='FCfile.csv'):
 
     mywriter.writerows(x)
     csv_out.close()
+    
+def file_present(x):
+    #only checks current working directory
+    full_path = os.getcwd() + '\\' + x
+    if os.path.exists(full_path):
+        return True
+    if not os.path.exists(full_path):
+        return False

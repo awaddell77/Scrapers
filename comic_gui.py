@@ -35,6 +35,7 @@ class Dbase_gui:
 		StringVar = self.ent_field.get('1.0', 'end')
 		StringVar = re.sub('\n', '', StringVar)
 		print(StringVar)
+		self.m_inst.cat_obj.reconnect()
 		self.m_inst.standardize_keys()
 		self.lst.append(StringVar)
 		self.lbl2["text"] = "Submitted data"
