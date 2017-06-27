@@ -44,7 +44,10 @@ def check_element(x, attr, attr_v=''):
 		else:
 			return False
 if __name__ == '__main__':
-	splitter('http://www.universaldist.com/pre-orders.aspx', sys.argv[1])
+	if sys.argv[1] == '-lw':
+		splitter('https://www.universaldist.com/pre-orders.aspx?Command=LastWeek', sys.argv[2])
+	else:
+		splitter('http://www.universaldist.com/pre-orders.aspx', sys.argv[1])
 
 #test = splitter('http://www.universaldist.com/pre-orders.aspx')
 #test_1_site = S_base('http://www.universaldist.com/pre-orders.aspx').sel_soup()
