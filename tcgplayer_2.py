@@ -5,8 +5,9 @@ from Im_dwnld import *
 
 
 
-browser = Sel_session('http://www.tcgplayer.com/')
-browser.start()
+browser = ''
+#Sel_session('http://www.tcgplayer.com/')
+#browser.start()
 magic_crit = ["Name", "Card Type:", "P / T:", "Rarity", "Card Number", "Description:", "Set Name:", "Color", "Product Image"]
 fow_crit = ["Name", "Type:", "Atk / Def:", "Rarity", "Card Number", "Description:", "Set Name:", "Attribute:", "Cost:", "Race:", "Product Image"]
 ws_crit = ["Name", "Rarity", "Card Number", "Level:", "Cost:", "Soul:", "Card Type:", "Trait:", "Color:", "Power:", "Trigger:", "Description:", "Product Image"]
@@ -290,13 +291,16 @@ def new_find(new, old):
 
 
 if __name__ == "__main__":
-	if sys.argv[1] == "-magic":
-		main_magic_full(sys.argv[2])
-	elif sys.argv[1] == '-fow':
-		main_fow_full(sys.argv[2])
-	elif sys.argv[1] == '-ws':
-		main_ws_full(sys.argv[2])
-	elif sys.argv[1] == '-pkm':
-		main_pkm_full(sys.argv[2])
-	elif sys.argv[1] == '-comp':
+	if sys.argv[1] == '-comp':
 		new_find(sys.argv[2], sys.argv[3])
+	else:
+		browser = Sel_session('http://www.tcgplayer.com/')
+		browser.start()
+		if sys.argv[1] == "-magic":
+			main_magic_full(sys.argv[2])
+		if sys.argv[1] == '-fow':
+			main_fow_full(sys.argv[2])
+		elif sys.argv[1] == '-ws':
+			main_ws_full(sys.argv[2])
+		elif sys.argv[1] == '-pkm':
+			main_pkm_full(sys.argv[2])

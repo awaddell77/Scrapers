@@ -14,10 +14,10 @@ def w_csv(x,output='FCfile.csv'):
 
     csv_out = open(output, 'w', newline='', encoding='utf-8')
     mywriter = csv.writer(csv_out)
-    try:
+    '''try:
         print("This is x: %s" % (x))
     except UnicodeEncodeError as UE:
-        print("Cannot print to console due to Unicode Error")
+        print("Cannot print to console due to Unicode Error")'''
     print("Saved file as \"{0}\"".format(output))
 
     mywriter.writerows(x)
