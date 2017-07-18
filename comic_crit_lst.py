@@ -23,4 +23,3 @@ def scraper():
 				d[crit_code] = ''
 				count += 1
 	return d
-

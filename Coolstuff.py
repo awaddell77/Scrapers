@@ -8,6 +8,7 @@ from S_format import *
 import time
 import re
 import copy
+import sys
 class Coolstuff:
 	def __init__(self, url):
 		self.url = url
@@ -23,7 +24,7 @@ class Coolstuff:
 		results = []
 		dmDiceOnly = []
 		dmNlst = []
-		results_final = [["Product Name", "Rarity", "", "", "Product Image"]]
+		results_final = [["Product Name", "Rarity", "", "", "Product Image", "Affiliation","Card Text", "Card Type", "Casting Cost","Die Limit"]]
 		if site.element_check('nextLink'):
 			results.extend(self.images_desc(site.source()))
 			while site.element_check('nextLink'):
@@ -142,8 +143,8 @@ class Coolstuff:
 
 
 
-
-test = Coolstuff("http://www.coolstuffinc.com/page/3652&resultsperpage=25&sb=&sh=1")
-test.dir = "Images"
-test.Dmvar = True
-test.main_auto()
+if __name__ == "__main__":
+	test = Coolstuff(sys.argv[1])
+	test.dir = sys.argv[2]
+	#test.Dmvar = True
+	test.main_auto()

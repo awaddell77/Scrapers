@@ -125,7 +125,7 @@ class Ws_scrape:
 	    return d
 	def uni_clean(self, x):
 		chars = [('“', '\"'), ("”", '"'), ("’", "' "), ('【', '[') , ('】', ']'), ('《', '<<') ,('》', '>>'),
-		('・', ' ')
+		('・', ' '), ('♪', '')
 		]
 		for i in chars:
 			x = str(x).replace(i[0], i[1])

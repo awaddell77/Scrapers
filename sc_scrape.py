@@ -1,5 +1,7 @@
 #starcity
 from soupclass8 import *
+import sys
+
 class StarCity:
 	def __init__(self, urls):
 		self.urls = urls
@@ -25,16 +27,14 @@ class StarCity:
 		for i in range(2, len(rows)):
 			link = rows[i].find('td').find('a')
 			card_link = S_format(str(link)).linkf("href=")
-			if card_link is not None and card_link != 'None':
-				results.append(card_link)
+			if card_link is not None and card_link != 'None': results.append(card_link)
 		return results
 	def man_link_process(self):
 		results = []
 		card_links = []
-		for i in self.urls:
-			card_links +=  self.link_scrape(i)
-		for i in card_links:
-			results.append(self.splitter(i))
+		#needs to use checklist form for results on sc website
+		for i in self.urls: card_links +=  self.link_scrape(i)
+		for i in card_links: results.append(self.splitter(i))
 		self.m_results = results
 		return results
 
@@ -44,18 +44,11 @@ class StarCity:
 
 
 
-
-
-test = StarCity("testing")
-res = test.splitter("http://sales.starcitygames.com/carddisplay.php?productids[]=1330940")
-print(res)
-t_url = "http://sales.starcitygames.com/search.php?substring=Amonkhet+Prerelease&go.x=0&go.y=0&go=GO&t_all=All&start_date=2010-01-29&end_date=2012-04-22&order_1=finish&limit=25&action=Show%2BDecks&card_qty%5B1%5D=1"
-t_url1 = "http://sales.starcitygames.com//search.php?substring=Amonkhet+Prerelease&start=50"
-#print(test.link_scrape(t_url))
-test.urls = [t_url, t_url1]
-print(test.man_link_process())
-w_csv(test.m_)
-
-
-
-
+if __name__ == "__main__":
+	test = StarCity(str(sys.argv[1]))
+	print(sys.argv[0])
+	print(sys.argv[1])
+	urls = []
+	for i in sys.argv[1:]: urls += [i]
+	test.urls = urls
+	w_csv(test.man_link_process())
