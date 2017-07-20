@@ -12,3 +12,4 @@ class CatSelect:
     def rpgSelect(self, manufacturer='Other'):
         if manufacturer == "Other":
             return '2761'
+    
