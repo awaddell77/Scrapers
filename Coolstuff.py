@@ -41,7 +41,10 @@ class Coolstuff:
 			#loop grabs the image URLS
 			#d_links = [results[i][1] for i in range(0, len(results))]
 			for i in results:
-				print(i)
+				try:
+					print(i)
+				except UnicodeEncodeError as UE:
+					print("Unicode Error, proceeding with image downloads")
 			d_links = [re.sub('/c_pad,h_1\d\d,w_1\d\d', '', results[i][3]) for i in range(0, len(results))]
 			#downloads the images
 			Im_dwnld(self.dir).i_main(d_links)
@@ -124,7 +127,7 @@ class Coolstuff:
 
 
 	def splitter_images(self, x):
-		#takes the raw image element from 
+		#takes the raw image element from
 		item = x.find('img', {'itemprop':'image'})
 		results = []
 

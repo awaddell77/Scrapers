@@ -1,6 +1,6 @@
 #for scraping from universaldist preorders (http://www.universaldist.com/pre-orders.aspx)
 from soupclass8 import *
-
+from UnivSelect import *
 def splitter(x, fname="universalscrape.csv"):
 	site = S_base(x).sel_soup()
 	table = site.find('table',{'class':'productstable'}).tbody
@@ -8,6 +8,7 @@ def splitter(x, fname="universalscrape.csv"):
 	results = []
 	d = {}
 	publisher = ''
+	pCategory = ''
 	for i in range(0, len(rows)):
 		if check_element(rows[i],'class', 'liRow') or check_element(rows[i], 'class', 'liAlternate'):
 			print("Worked")
@@ -19,7 +20,9 @@ def splitter(x, fname="universalscrape.csv"):
 			image_name = fn_grab(image_link)
 			rows[i].find('table').parent.decompose() #removes the table and its td parent tag from row
 			sku = con_text_s(rows[i].find('td'))
-			new_item = (product_name, image_link, image_name, sku, publisher)
+			pCategory = UnivSelect(product_name)
+			pCategory.select(category_name[0].split('/')[0].strip(' '), category_name[0].split('/')[1].strip(' '))
+			new_item = (product_name, image_link, image_name, sku, publisher, pCategory.category)
 			results.append(new_item)
 		if check_element(rows[i], 'class', 'category'):
 			category_name = [con_text_s(rows[i])]

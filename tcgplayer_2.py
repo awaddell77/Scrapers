@@ -11,11 +11,12 @@ browser = ''
 magic_crit = ["Name", "Card Type:", "P / T:", "Rarity", "Card Number", "Description:", "Set Name:", "Color", "Product Image"]
 fow_crit = ["Name", "Type:", "Atk / Def:", "Rarity", "Card Number", "Description:", "Set Name:", "Attribute:", "Cost:", "Race:", "Product Image"]
 ws_crit = ["Name", "Rarity", "Card Number", "Level:", "Cost:", "Soul:", "Card Type:", "Trait:", "Color:", "Power:", "Trigger:", "Description:", "Product Image"]
-
+ff_crit = ["Name", "Rarity:", "Number:", "Description:", "Card Type", "Element:", "Cost:", "Power:", "Job:", "Category:"]
 pkm_crit = ["Name", "Card Type", "Rarity", "Card Number", "Card Text", "Attack #1", "Attack #2", "Attack #3", "HP", "Stage", "Ability", "Weakness", "Resistance", "Retreat Cost" "Set Name:", "Product Image"]
 results = [["Name", "Card Type", "Pow/Tgh", "Rarity", "Card Number", "Card Text", "Set Name", "Finish", "Color", "Cost", "Artist"]]
 results_fow = [["Name", "Card Type", "ATK/DEF", "Rarity", "Card Number", "Card Effect", "Set Name", "Attribute", "Cost", "Race"]]
 results_ws = [["Name", "Rarity", "Card Number", "Level", "Cost", "Soul", "Card Type", "Trait", "Color", "Power", "Trigger", "Description"]]
+results_ff [["Card Name", "Rarity", "Card Number", "Description:", "Position", "Element", "CP", "Power:", "Job:", "Category:"]]
 results_pkm = [pkm_crit]
 
 def splitter_fow(x, color = 0):
@@ -158,6 +159,29 @@ def splitter_pkm(x):
 	dwnld_obj.i_main([image_link])
 	#return d
 	return S_format(d).d_sort(pkm_crit)
+def splitter_ff(x):
+	d = {}
+	browser.go_to(x)
+	browser.w_load(30)
+	print("Processing {0}".format(x))
+	site = browser.source()
+	d["Name"] = site.find('div', {'class':'product-details__content'}).h1.text
+	table = site.find('dl', {'class':'product-description'})
+	rows = table.find_all('dt')
+	image_link = S_format(str(site.find('div', {'class':'product-details__image'}))).linkf('src=', 0, '<img')
+	d["Product Image"] = fn_grab(image_link)
+	if color != 0:
+		d["Color"] = color
+	for i in range(0, len(rows)):
+		if rows[i].text == 'Description:':
+			d[re.sub('\n', '' , rows[i].text)] = re.sub('\n', ' ', rows[i].find_next('dd').text)
+
+		else:
+			d[re.sub('\n', '' , rows[i].text)] = re.sub('\n', ' ', rows[i].find_next('dd').text)
+	dwnld_obj = Im_dwnld('FF Set')
+	dwnld_obj.i_main([image_link])
+
+	return S_format(d).d_sort(ff_crit)
 
 def link_collector():
 	#grabs all the links on a single results page on TCG Player
@@ -202,7 +226,7 @@ def main_fow_full(x, total = 0):
 		if browser.driver.execute_script("return document.getElementsByClassName('nextPage')[0].getAttribute('disabled')") == "disabled":
 			break
 		else:
-			try: 
+			try:
 				browser.driver.execute_script("document.getElementsByClassName('nextPage')[0].click()")
 			except:
 				browser.driver.refresh()
@@ -225,7 +249,7 @@ def main_ws_full(x, total = 0):
 		if browser.driver.execute_script("return document.getElementsByClassName('nextPage')[0].getAttribute('disabled')") == "disabled":
 			break
 		else:
-			try: 
+			try:
 				browser.driver.execute_script("document.getElementsByClassName('nextPage')[0].click()")
 			except:
 				browser.driver.refresh()
@@ -259,10 +283,30 @@ def main_pkm_full(x):
 	browser.close()
 	return results
 
+def main_ff_full(x):
+	browser.go_to(x)
+	results = results_ff
+	links = []
+	while True:
+		#gets links for the entire set
+		time.sleep(2)
+		links.extend(link_collector())
+		if browser.driver.execute_script("return document.getElementsByClassName('nextPage')[0].getAttribute('disabled')") == "disabled":
+			break
+		else:
+			browser.driver.execute_script("document.getElementsByClassName('nextPage')[0].click()")
+
+
+	for i in range(0, len(links)):
+		results.append(splitter_ff(links[i]))
+	w_csv(results, 'tcgplayer.csv')
+	browser.close()
+	return results
+
 def fow_rarity_trans(x):
 	rarities = {'Common':'C', 'Uncommon':'U','Rare':'R', 'Super Rare':'SR', 'Uber Rare':'UR'}
 	#returns the proper rarity descriptor
-	#if descriptor is not a key in rarities it will return the original descriptor 
+	#if descriptor is not a key in rarities it will return the original descriptor
 	return rarities.get(x, x)
 
 
@@ -304,3 +348,5 @@ if __name__ == "__main__":
 			main_ws_full(sys.argv[2])
 		elif sys.argv[1] == '-pkm':
 			main_pkm_full(sys.argv[2])
+		elif sys.argv[1] == '-ff':
+			main_ff_full(sys.argv[2])

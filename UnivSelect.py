@@ -8,6 +8,7 @@ class UnivSelect(CatSelect):
         self.bgFilter = ['BROKEN TOKEN'] #univ distribution often mistakenly identifies board game accessories as stand alone board games, this list contains publishers that make accessories for board games
         self.rpgs = ['MODIPHIUS', 'ATLAS GAMES']
         self.rpgCats = {'ATLAS GAMES':'6273', 'CATALYST GAMES':''}
+        self.category = ''
 
     def keywordSelect(self):
         #uses presence of key word or phrase in product name to descide on category
@@ -19,6 +20,12 @@ class UnivSelect(CatSelect):
             self.category = '1361'
             return
         elif "SPORTS TRADING CARDS" in univCat1:
+            if 'SOCCER TRADING CARDS' in univCat2:
+                self.category = '2726'
+                return
+            elif univCat2 not in list(self.spCards.keys()):
+                self.category = '2726'
+                return
             self.category = self.spCards[univCat2]
             return
         elif "BATTLE FOAM" in univCat2:
@@ -55,13 +62,13 @@ class UnivSelect(CatSelect):
             else:
                 self.category = "2761"
                 return
-        elif 'LICENSED GOODS & MEMORABILIA' in univCat1:
+        elif 'LICENSED GOODS & MEMORABILIA' in univCat2:
             self.category = '7433'
             return
-        elif 'DECK PROTECTORS' in univCat1:
+        elif 'DECK PROTECTORS' in univCat2:
             self.category = '1447'
             return
-        elif 'PLAYMATS' in univCat1:
+        elif 'PLAYMATS' in univCat2:
             self.category = '1450'
             return
 test = UnivSelect("CONAN: ADVENTURES DELUXE CONQUEROR'S EDITION RPG")

@@ -46,7 +46,7 @@ class GtsSelect(CatSelect):
         else:
             return
 
-    def accSelect(self, cat1):
+    def accSelect(self):
         for i in self.accLst:
             print(i)
             for i_2 in i:
