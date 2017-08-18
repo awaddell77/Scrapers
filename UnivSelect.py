@@ -32,13 +32,13 @@ class UnivSelect(CatSelect):
             self.category = '2631'
             return
         elif 'ROLE PLAYING GAMES' in univCat1:
-            if "CUBICLE 7" in univCat2 and "DOCTOR WHO" in productName:
+            if "CUBICLE 7" in univCat2 and "DOCTOR WHO" in self.productName:
                 self.category = '8943'
                 return
-            if "CUBICLE 7" in univCat2 and "THE ONE RING" in productName:
+            if "CUBICLE 7" in univCat2 and "THE ONE RING" in self.productName:
                 self.category = '8933'
                 return
-            if "CUBICLE 7" in univCat2 and "PRIMEVAL" in productName:
+            if "CUBICLE 7" in univCat2 and "PRIMEVAL" in self.productName:
                 self.category = '12943'
                 return
             if "CUBICLE 7" in univCat2:

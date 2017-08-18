@@ -15,6 +15,10 @@ class dBaseSqlite:
         rows = self.cursor.fetchall()
         self.last_resp = rows
         return rows
+	def command(self, x):
+		self.cursor.execute(x)
+		self.con.commit()
+
 
 #for testing only
 test = dBaseSqlite('C:\\Users\\Owner\\testDB.db')

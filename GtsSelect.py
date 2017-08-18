@@ -5,7 +5,7 @@ class GtsSelect(CatSelect):
         super().__init__(productName)
         self.spCards = {'HOCKEY TRADING CARDS': '2725', 'BASEBALL CARDS':'2722',
         'FOOTBALL CARDS':'2780','MISC. SPORTS CARDS':'2726','ENTERTAINMENT CARDS':'2724',
-        'BASKETBALL CARDS':'2723'}
+        'BASKETBALL CARDS':'2723', 'OTHER SPORTS':'2726'}
         self.cardSleeves = ['DECK PROTECTOR', "SLEEVES"]
         self.playmats = ["PLAYMAT"]
         self.deckBoxes = ["DECK BOX"]
@@ -58,7 +58,7 @@ class GtsSelect(CatSelect):
             print("{1} is not in {0}".format(self.productName, i_2))
             return '2631'
     def funkoSelect(self):
-        if 'Pocket Pop! Keychain' in self.productName: return '13053'
+        if 'POCKET POP! KEYCHAIN' in self.productName: return '13053'
         if "DORBZ" in self.productName: return '12783'
         if 'ROCK CANDY' in self.productName: return '18713'
         else:

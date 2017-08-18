@@ -16,7 +16,7 @@ pkm_crit = ["Name", "Card Type", "Rarity", "Card Number", "Card Text", "Attack #
 results = [["Name", "Card Type", "Pow/Tgh", "Rarity", "Card Number", "Card Text", "Set Name", "Finish", "Color", "Cost", "Artist"]]
 results_fow = [["Name", "Card Type", "ATK/DEF", "Rarity", "Card Number", "Card Effect", "Set Name", "Attribute", "Cost", "Race"]]
 results_ws = [["Name", "Rarity", "Card Number", "Level", "Cost", "Soul", "Card Type", "Trait", "Color", "Power", "Trigger", "Description"]]
-results_ff [["Card Name", "Rarity", "Card Number", "Description:", "Position", "Element", "CP", "Power:", "Job:", "Category:"]]
+results_ff = [["Card Name", "Rarity", "Card Number", "Description:", "Position", "Element", "CP", "Power:", "Job:", "Category:"]]
 results_pkm = [pkm_crit]
 
 def splitter_fow(x, color = 0):
@@ -336,6 +336,7 @@ def new_find(new, old):
 
 if __name__ == "__main__":
 	if sys.argv[1] == '-comp':
+		#new, old
 		new_find(sys.argv[2], sys.argv[3])
 	else:
 		browser = Sel_session('http://www.tcgplayer.com/')
