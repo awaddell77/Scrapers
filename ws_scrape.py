@@ -50,7 +50,7 @@ class Ws_scrape:
 				browser.driver.find_element_by_link_text(set_name)
 			except:
 				print("Could not find set")
-				
+
 			else:
 				browser.driver.find_element_by_link_text(set_name).click()
 		else:
@@ -96,7 +96,7 @@ class Ws_scrape:
 	    results = [['Card Name','Power', 'Type', 'Color', 'Card Text', 'Level', 'Soul', 'Rarity', 'Trigger', 'Traits', 'Cost', 'Card Number', 'Side', 'Expansion']]
 	    for i in range(0, len(urls)):
 	        #iterates through all of the fresh links
-	        
+
 	        if "listNone" not in urls[i]:
 	        	print("Now Processing %s" % urls[i])
 	        	bsObject = self.test(S_base(urls[i]).soupmaker())
@@ -125,13 +125,13 @@ class Ws_scrape:
 	    return d
 	def uni_clean(self, x):
 		chars = [('“', '\"'), ("”", '"'), ("’", "' "), ('【', '[') , ('】', ']'), ('《', '<<') ,('》', '>>'),
-		('・', ' '), ('♪', '')
+		('・', ' '), ('♪', ''), ('…', '...')
 		]
-		for i in chars:
+		for i in chars:7
 			x = str(x).replace(i[0], i[1])
 		return x
-	    
-	    
+
+
 	'''FORMATTING'''
 	def stsc(self, x):#takes dictionary
 	    d = x
