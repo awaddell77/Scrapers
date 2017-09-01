@@ -147,7 +147,12 @@ class Coolstuff:
 
 
 if __name__ == "__main__":
-	test = Coolstuff(sys.argv[1])
-	test.dir = sys.argv[2]
-	#test.Dmvar = True
-	test.main_auto()
+	if sys.argv[1] == '-hc':
+		test = Coolstuff(sys.argv[2])
+		test.dir = sys.argv[3]
+		test.h_var = True
+		test.main_auto()
+	else:
+		test = Coolstuff(sys.argv[1])
+		test.dir = sys.argv[2]
+		test.main_auto()
