@@ -10,6 +10,7 @@ class TcoScraper:
         self.links = []
         self.masterCrits = set()
         self.cardList = []
+        self.defaultImage = 'no-image.jpg'
     def main(self):
         self.browser = Sel_session('http://www.tradecardsonline.com/')
         self.browser.go_to(self.url)
@@ -62,8 +63,15 @@ class TcoScraper:
         #takes url to card page, returns dictionary
         site = S_base(x[0]).soupmaker()
         table = site.find('div', {'id':'main_card_content'}).table
+        image_raw = table.find('a', {'target':'_blank'}).img
+        #if image_raw is None: image_raw = '/' + self.defaultImage
+        image = S_format(str(image_raw)).linkf('src=')
+        imageLink = 'http://www.tradecardsonline.com' + self.urlExtractor(image) + '/big' + image
+
         data = self.cust_splitter(table)
         data["Card Name"] = x[1]
+        data["Product Image"] = image
+        data["Image Link"] = imageLink
         self.cardList.append(data)
     def cust_splitter(self, x):
         d = {}
@@ -76,6 +84,11 @@ class TcoScraper:
             val = str(i.text).strip(' ')
             d[crit] = val
         return d
+    def urlExtractor(self, x):
+        #returns the url without the target file on the end
+        xLst = x.split('/')
+        return '/'.join(xLst[:len(xLst)-1])
+
 
 if __name__ == "__main__":
     mInst = TcoScraper(sys.argv[1])
