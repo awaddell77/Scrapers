@@ -25,7 +25,10 @@ def main_batch1(x):#links must be pre-scraped and saved in a text file
     count = 0
     for i in range(0 ,len(all_links)):
         h = main_s(all_links[i])
-        print(h)
+        try:
+            print(h)
+        except UnicodeEncodeError as UE:
+            print("Encountered unicode error. Proceeding with scrape.")
         print(all_links[i])
         results.append(main_s(all_links[i]))
         print('%s completed!' % (all_links[i]))
