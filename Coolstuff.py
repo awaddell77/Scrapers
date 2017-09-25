@@ -27,6 +27,8 @@ class Coolstuff:
 		results_final = [["Product Name", "Rarity", "", "", "Product Image", "Affiliation","Card Text", "Card Type", "Casting Cost","Die Limit"]]
 		if site.element_check('nextLink'):
 			results.extend(self.images_desc(site.source()))
+			site.js('window.scrollTo(0,document.body.scrollHeight);')
+			time.sleep(5)
 			while site.element_check('nextLink'):
 
 				site.js("document.getElementById('nextLink').children[0].click();")
@@ -34,8 +36,12 @@ class Coolstuff:
 					time.sleep(5)
 				except KeyboardInterrupt as KE:
 					break
+				site.js('window.scrollTo(0,document.body.scrollHeight);')
+				time.sleep(5)
 				results.extend(self.images_desc(site.source()))
 		else:
+			site.js('window.scrollTo(0,document.body.scrollHeight);')
+			time.sleep(5)
 			results.extend(self.images_desc(site.source()))
 		if results != []:
 			#loop grabs the image URLS
@@ -131,7 +137,7 @@ class Coolstuff:
 		item = x.find('img', {'itemprop':'image'})
 		results = []
 
-		if S_format(str(item)).linkf('src=') == 'http://res.cloudinary.com/csicdn/image/upload/v1/Images/fast_image.gif':
+		if S_format(str(item)).linkf('src=') == 'https://res.cloudinary.com/csicdn/image/upload/v1/Images/fast_image.gif':
 			link_i = S_format(str(item)).linkf('data-src=')
 			link_i = re.sub("/c_pad,h_100,w_100", '', link_i)
 			results = [S_format(str(item)).linkf('<img alt='),link_i, fn_grab(link_i)]

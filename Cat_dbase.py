@@ -1,4 +1,4 @@
-#catalog dbase 
+#catalog dbase
 from dbaseObject import *
 from text_l import *
 import time
@@ -70,8 +70,11 @@ class Cat_dbase(Db_mngmnt):
 		for i in descriptors:
 			i[0] = self.get_descriptor_name(i[0])
 		return descriptors
+	def get_prod_by_ptype(self, product_type_id):
+		#returns the product ids of all products of the specified product type
+		return self.query("SELECT id FROM products WHERE product_type_id = \"{0}\";".format(str(product_type_id)))
 	def prod_type_name(self, type_id):
-		type_id = self.query("SElECT name FROM product_types WHERE id = \"{0}\";".format(type_id))
+		type_id = self.query("SELECT name FROM product_types WHERE id = \"{0}\";".format(type_id))
 		return type_id[0][0]
 	def tup_to_lst(self, x):
 		#turns list of tuples into list of lists
@@ -203,5 +206,3 @@ class Cat_dbase(Db_mngmnt):
 	def result_format(self, columns,  x):
 		for i in range(0, len(columns)):
 			d[columns[i]] = x[i]
-
-
