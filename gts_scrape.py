@@ -92,7 +92,7 @@ def dict_sort(x):#parses values in order to make them readable
             d2['UPC each:'] = "'" + d2['Barcode:']
         else:
             d2['UPC each:'] = 'N/A'
-    catCategory = GtsSelect(d2["Product Name:"], d2["Manufacturer:"])
+    catCategory = GtsSelect(d2["Product Name:"], d2.get("Manufacturer:", 'N/A'))
     catCategory.select(d2["Category:"])
     d2["Catalog Category"] = catCategory.category
 

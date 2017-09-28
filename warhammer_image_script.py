@@ -44,5 +44,34 @@ class WhCat:
         nRes = [(results[i]['id'], results[i]['New Image'], results[i]['New Image Link']) for i in range(0, len(results))]
         self.csvData = nRes
         return results
-
-test = WhCat('gw_trade.csv')
+    def shortcodeImages(self):
+        #product ids for old warhammer products
+        p_ids1 = self.catObj.query("SELECT id FROM products WHERE product_type_id in ('175', '174', '733', '169');")
+        #product ids for games workshop trade items
+        p_ids2 = self.catObj.query("SELECT id FROM products WHERE product_type_id = '1122';")
+        results = []
+        results2 = []
+        idPictures = []
+        tCount = 0
+        for i in p_ids1:
+            #print(i)#remove after testing
+            results.append(self.catObj.get_product(i[0]))
+            #tCount += 1
+            #if tCount > 25: break
+            print(".", end = "", flush = True)
+        for i in p_ids2:
+            results2.append(self.catObj.get_product(i[0]))
+            print(".", end = "", flush = True)
+        for i in range(0, len(results2)):w
+            results2[i]["New Image"] = ''
+            results2[i]["New Image Link"] = ''
+            for i_2 in range(0, len(results)):
+                if results2[i]["photo_file_name"] in ['Games-Workshop-Logo.jpg'] and results2[i]["Part Code"] == results[i_2].get("Part Code", 'N/A'):
+                    print("{0} matches {1}".format(results2[i]["Part Code"], results[i_2]["Part Code"]))
+                    results2[i]["New Image"] = results[i_2]["photo_file_name"]
+                    results2[i]["New Image Link"] = "https://crystalcommerce-assets.s3.amazonaws.com/photos/" + str(results[i_2]["id"]) + '/' + str(results2[i]["New Image"])
+        self.mResults = results2
+        nRes = [(results2[i]['id'], results2[i]['New Image'], results2[i]['New Image Link']) for i in range(0, len(results2))]
+        self.csvData = nRes
+        return results2
+#test = WhCat('gw_trade.csv')
