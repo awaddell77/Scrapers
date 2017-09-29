@@ -127,7 +127,7 @@ class Ws_scrape:
 		chars = [('“', '\"'), ("”", '"'), ("’", "' "), ('【', '[') , ('】', ']'), ('《', '<<') ,('》', '>>'),
 		('・', ' '), ('♪', ''), ('…', '...')
 		]
-		for i in chars:7
+		for i in chars:
 			x = str(x).replace(i[0], i[1])
 		return x
 
