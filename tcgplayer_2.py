@@ -111,18 +111,18 @@ def splitter_pkm(x):
 	browser.w_load(30)
 	print("Processing {0}".format(x))
 	site = browser.source()
-	d["Name"] = site.find('div', {'class':'cardDetails'}).h1.text
-	table = site.find('div', {'class':'cardDetails'}).table
-	rows = table.find_all('tr')
-	image_link = S_format(str(site.find('div', {'class':'detailImage'}))).linkf('src=', 0, '<img')
+	d["Name"] = site.find('div', {'class':'product-details__content'}).h1.text
+	table = site.find('dl', {'class':'product-description'})
+	rows = table.find_all('dt')
+	image_link = S_format(str(site.find('div', {'class':'product-details__image'}))).linkf('src=', 0, '<img')
 	d["Product Image"] = fn_grab(image_link)
 	for i in range(0, len(rows)):
-		if rows[i].find('td').text == 'Card Number / Rarity:':
-			contents = re.sub('\n', ' ', rows[i].find('td').find_next('td').text).split('/')
+		if rows[i].text == 'Card Number / Rarity:':
+			contents = re.sub('\n', ' ', rows[i].find_next('dd').text).split('/')
 			d['Card Number'] = contents[0].strip(' ')
 			d['Rarity'] = contents[1].strip(' ')
-		elif rows[i].find('td').text == 'Card Type / HP / Stage:':
-			contents = re.sub('\n', ' ', rows[i].find('td').find_next('td').text).split('/')
+		elif rows[i].text == 'Card Type / HP / Stage:':
+			contents = re.sub('\n', ' ', rows[i].find_next('dd').text).split('/')
 			d["Card Type"] = contents[0].strip(' ')
 			d["HP"] = contents[1].strip(' ')
 			d["Stage"] = contents[2].strip(' ')
@@ -130,22 +130,22 @@ def splitter_pkm(x):
 
 
 
-		elif rows[i].find('td').text == 'Card Text:':
-			value = re.sub('\n', ' ', rows[i].find('td').find_next('td').text)
+		elif rows[i].text == 'Card Text:':
+			value = re.sub('\n', ' ', rows[i].find_next('dd').text)
 			if "Ability —" in value:
 				d["Ability"] = value
 			else:
 				d["Card Text"] = value
 			#d[re.sub('\n', '' , rows[i].find('td').text)] = re.sub('\n', ' ', rows[i].find('td').find_next('td').text)
-		elif 'Attack' in rows[i].find('td').text:
-			if '1' in rows[i].find('td').text:
-				d["Attack #1"] = rows[i].find('td').find_next('td').text.replace('\n', ' ').strip(' ')
-			elif '2' in rows[i].find('td').text:
-				d["Attack #2"] = rows[i].find('td').find_next('td').text.replace('\n', ' ').strip(' ')
-			elif '3' in rows[i].find('td').text:
-				d["Attack #3"] = rows[i].find('td').find_next('td').text.replace('\n', ' ').strip(' ')
-		elif rows[i].find('td').text == 'Weakness / Resistance / Retreat Cost:':
-			contents = re.sub('\n', ' ', rows[i].find('td').find_next('td').text).split('/')
+		elif 'Attack' in rows[i].text:
+			if '1' in rows[i].text:
+				d["Attack #1"] = rows[i].find_next('dd').text.replace('\n', ' ').strip(' ')
+			elif '2' in rows[i].text:
+				d["Attack #2"] = rows[i].find_next('dd').text.replace('\n', ' ').strip(' ')
+			elif '3' in rows[i].text:
+				d["Attack #3"] = rows[i].find_next('dd').text.replace('\n', ' ').strip(' ')
+		elif rows[i].text == 'Weakness / Resistance / Retreat Cost:':
+			contents = re.sub('\n', ' ', rows[i].find_next('dd').text).split('/')
 			d["Weakness"] = contents[0].strip(' ')
 			d["Resistance"] = contents[1].strip(' ')
 			d["Retreat Cost"] = contents[2].strip(' ')
@@ -154,9 +154,10 @@ def splitter_pkm(x):
 
 
 		else:
-			d[re.sub('\n', '' , rows[i].find('td').text)] = re.sub('\n', ' ', rows[i].find('td').find_next('td').text)
-	dwnld_obj = Im_dwnld('PKM Set')
-	dwnld_obj.i_main([image_link])
+			d[re.sub('\n', '' , rows[i].text)] = re.sub('\n', ' ', rows[i].find_next('dd').text)
+	if image_link != 'None':
+		dwnld_obj = Im_dwnld('PKM Set')
+		dwnld_obj.i_main([image_link])
 	#return d
 	return S_format(d).d_sort(pkm_crit)
 def splitter_ff(x):
@@ -351,3 +352,6 @@ if __name__ == "__main__":
 			main_pkm_full(sys.argv[2])
 		elif sys.argv[1] == '-ff':
 			main_ff_full(sys.argv[2])
+else:
+	browser = browser = Sel_session('http://www.tcgplayer.com/')
+	browser.start()

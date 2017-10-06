@@ -111,6 +111,7 @@ if len(sys.argv) > 1:
 		splitter(sys.argv[2])
 	elif sys.argv[1] == '-s':
 		main_imp(sys.argv[2],sys.argv[3])
+	elif sys.argv[1] == '-sg':
+		main(sys.argv[2], sys.argv[3])
 else:
 	print("[data]")
-
