@@ -23,6 +23,16 @@ class Sel_session(object):
         self.driver.get(x)
         if self.timeout:
             self.load_cutoff(kwargs.get("timeout", 10))
+    def go_to_TO(self, x, **kwargs):
+        self.driver.get(x)
+        try:
+            WebDriverWait(self.driver, 10).until(readyCall())
+        except TypeError as TE:
+            print("TYPE ERROR")
+            return
+        except:
+            raise(CustomTimeoutException("Timed out"))
+
     def js(self, x):
         return self.driver.execute_script(x)
     def close(self):
@@ -47,12 +57,18 @@ class Sel_session(object):
 
             else:
                 break
+    def ready(self):
+        if self.driver.execute_script('return document.readyState') == "complete":
+            return True
+        else:
+            return False
+
     def load_cutoff(self, timeout = 10):
-        
+
         start = time.time()
         while (time.time() - start) <= timeout and self.driver.execute_script('return document.readyState') != "complete":
-            pass
-        if (time.time() - start) > timeout:
+            print("Wait time: {0}".format(time.time() - start))
+        if (time.time() - start) > timeout and self.driver.execute_script('return document.readyState') != "complete":
             raise CustomTimeoutException("Timed out")
 
 
@@ -69,6 +85,13 @@ class Sel_session(object):
             return False
         else:
             return True
-
+class readyCall:
+    def __init__(self, data = ''):
+        self.data = data
+    def __call__(self, driver):
+        if driver.execute_script('return document.readyState') == "complete":
+            return True
+        else:
+            return False
 class CustomTimeoutException(Exception):
     '''Raised whenever browser exceeds a time out variable while loading a page'''

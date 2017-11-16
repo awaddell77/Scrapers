@@ -7,6 +7,7 @@ from Im_dwnld import *
 from dictionarify import *
 import time
 from Cat_dbase import *
+from I_handling import *
 class priceCharting:
     def __init__(self, url="", **kwargs):
         self.url = url
@@ -16,22 +17,42 @@ class priceCharting:
         self.games = []
         self.results = []
         self.catObj = ''
+        self.skippedLst = []
+        self.timeout = 10
+        self.timeoutToggle = True
+    def main(self, cats = [], fname = "vg_export.csv"):
+        if not cats:
+            self.getVGamesData()
+        elif isinstance(cats, (str, int)): cats = [cats]
+        for i in cats:
+            self.getVGamesData(i)
+        self.start_browser()
+        self.browser.timeout = self.timeoutToggle
+        time.sleep(1)
+        self.imageLinkCollector(self.games)
+        self.export(fname)
+
+
+
+
+
 
 
     def start_browser(self):
         self.browser = Sel_session("https://www.pricecharting.com/")
         self.browser.start()
+        self.browser.driver.set_page_load_timeout(self.timeout)
     def getVGamesData(self, cat = ""):
         self.catObj = Cat_dbase()
         self.catObj.set_proper_desc(True)
         if cat:
-            products = self.catObj.query("SELECT id FROM products WHERE product_type_id = \"1125\" AND category_id = \"{0}\";".format(str(cat)))
+            products = self.catObj.query("SELECT id FROM products WHERE product_type_id = \"1125\" AND category_id = \"{0}\" AND photo_file_name IS null;".format(str(cat)))
         else:
-            products = self.catObj.query("SELECT id FROM products WHERE product_type_id = \"1125\";")
+            products = self.catObj.query("SELECT id FROM products WHERE product_type_id = \"1125\" AND photo_file_name IS null;")
         #remove limit after testing
         for i in range(0, len(products)):
-            #REMOVE THE STEP AFTER TESTING
-            print("Processing", str(products[i][0]), "(#{0} out of {1})".format(i, len(products)))
+
+            print("Processing", str(products[i][0]), "(#{0} out of {1})".format(i+1, len(products)))
             self.games.append(self.catObj.get_product(products[i][0]))
         self.games.sort(key=sort1)
 
@@ -42,48 +63,72 @@ class priceCharting:
 
     def imageLinkCollector(self, games):
         #takes list of dicts
-        dLoader = Im_dwnld("C:\\Users\\Owner\\Scrapers\\Video Game Images\\")
+        tdir = "C:\\Users\\Owner\\Scrapers\\Video Game Images\\"
+        dLoader = Im_dwnld(tdir)
+        count = 0
         for i in games:
             name = self.nameFix(i["Product Name"])
-            print("Attempting to process {0}".format(i["Product Name"]))
+            count += 1
+            print("Attempting to process {0} (#{1} of {2})".format(i["Product Name"], count, len(games)))
             console = self.consoleFix(i["Console"])
             url = "https://www.pricecharting.com/game/" + console + "/" + name
-            self.browser.go_to(url)
-            linkInitial = "https://www.pricecharting.com" + self.splitter(self.browser.source())
+            self.goto(url)
+            try:
+                linkInitial = "https://www.pricecharting.com" + self.splitter(self.browser.source())
+            except AttributeError as AE:
+                self.skippedLst.append(i)
+                print("SKIPPED {0}".format(i["Product Name"]))
+                continue
             print("linkInitial: " + linkInitial)
-            self.browser.go_to(linkInitial)
+            self.goto(linkInitial)
             time.sleep(.5)
             imageElement = self.browser.source()
-            imageLink = self.splitter2(imageElement)
+            try:
+                imageLink = self.splitter2(imageElement)
+            except AttributeError as AE:
+                self.skippedLst.append(i)
+                print("SKIPPED {0}".format(i["Product Name"]))
+                continue
             print("imageLink: " + imageLink)
             if "no-image-available" not in imageLink:
                 fname = dLoader.d_img(imageLink, str(i["Product Id"]))
                 i["Product Image"] = fname
+                imageF = I_handling(tdir + fname)
+                imageF.resizeByFactor(2.5)
+
             else:
                 i["Product Image"] = ""
+        self.browser.close()
         return games
     def goto(self, x):
         try:
-            self.browser.go_to(x)
+            self.browser.go_to_TO(x)
         except CustomTimeoutException as E:
+            print("EXCEPTION")
             self.browser.js("window.stop()")
-            self.browser.go_to(x)
+            self.goto(x)
+        except:
+            print("EXCEPTION")
+            self.browser.js("window.stop()")
+            self.goto(x)
+
+        else:
+            return
     def export(self, output="vg_export.csv"):
         self.results = []
-        keys = list(self.games[0].keys())
+        #keys = list(self.games[0].keys())
+        keys = ["Product Name", "Product Id", "Product Image", "Console", "PCID"]
         self.results.append(keys)
         for i in self.games:
             self.results.append(S_format(i).d_sort(keys))
         w_csv(self.results, output)
 
-
-
-
-
     def nameFix(self, s):
-        s1 = str(s).split(" ")
+        s1 = str(s).replace("/", "")
+        s1 = s1.split(" ")
         s1 = "-".join(s1)
         s1 = s1.replace(".","")
+        s1 = s1.replace(":", "")
         return s1
     def consoleFix(self, s):
         s1 = str(s).lower()
@@ -117,11 +162,15 @@ class priceCharting:
 def sort1(x):
     return x["Console"]
 
-mInst = priceCharting()
-mInst.getVGamesData("22381")
-mInst.start_browser()
-mInst.browser.timeout = True
-results = mInst.imageLinkCollector(mInst.games)
+#mInst = priceCharting()
+#mInst.main('22348')
+#mInst.getVGamesData("22384")
+#mInst.getVGamesData("22354")
+
+#mInst.start_browser()
+#mInst.browser.timeout = True
+#results = mInst.imageLinkCollector(mInst.games)
+#mInst.export("segamasters.csv")
 '''mInst.start_browser()
 mInst.browser.timeout = True
 mInst.import_csv("video_test.csv")
@@ -129,4 +178,15 @@ results = mInst.imageLinkCollector(mInst.games)
 mInst.export()'''
 
 if __name__ == "__main__":
-    h = priceCharting(sys.argv[1])
+    h = priceCharting()
+
+    if "," in sys.argv[1]:
+        ids = sys.argv[1].split(",")
+        cat_lst = [i.strip() for i in ids]
+        h.start_browser()
+        h.browser.timeout = True
+        h.main(cat_lst)
+    else:
+        h.start_browser()
+        h.browser.timeout = True
+        h.main(sys.argv[1])
