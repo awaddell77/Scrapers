@@ -5,18 +5,24 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup as bs
 import lxml
+import time
 
 class Sel_session(object):
     def __init__(self, url='http://www.fsf.org/', *args):
         self.url = url
         self.args = args
         self.driver = webdriver.Firefox()
+        #if true timeout enables the load_cutoff method in go_to
+        self.timeout = False
+
 
     def start(self):
         self.driver.get(self.url)
         return self.driver
-    def go_to(self,x):
+    def go_to(self,x, **kwargs):
         self.driver.get(x)
+        if self.timeout:
+            self.load_cutoff(kwargs.get("timeout", 10))
     def js(self, x):
         return self.driver.execute_script(x)
     def close(self):
@@ -41,8 +47,13 @@ class Sel_session(object):
 
             else:
                 break
-
-
+    def load_cutoff(self, timeout = 10):
+        
+        start = time.time()
+        while (time.time() - start) <= timeout and self.driver.execute_script('return document.readyState') != "complete":
+            pass
+        if (time.time() - start) > timeout:
+            raise CustomTimeoutException("Timed out")
 
 
 
@@ -58,4 +69,6 @@ class Sel_session(object):
             return False
         else:
             return True
-    
+
+class CustomTimeoutException(Exception):
+    '''Raised whenever browser exceeds a time out variable while loading a page'''

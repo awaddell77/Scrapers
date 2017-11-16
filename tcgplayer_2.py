@@ -189,7 +189,7 @@ def link_collector():
 	#browser.go_to(x)
 	time.sleep(2)
 	test = browser.source() #test is used as the identifier because I don't want to find and replace for it in this function
-	links = ['http://shop.tcgplayer.com' + S_format(str(test.find_all('h2', {'class':'product__name'})[i].a)).linkf('<a href=') for i in range(0, len(test.find_all('h2', {'class':'product__name'})))]
+	links = ['http://shop.tcgplayer.com' + S_format(str(test.find_all('a', {'class':'product__name'})[i])).linkf('href=') for i in range(0, len(test.find_all('a', {'class':'product__name'})))]
 	return links
 
 
@@ -202,7 +202,9 @@ def main_magic_full(x,color= 0, total = 0):
 		#gets links for the entire set
 		time.sleep(2)
 		links.extend(link_collector())
-		if browser.driver.execute_script("return document.getElementsByClassName('nextPage')[0].getAttribute('disabled')") == "disabled":
+		end = browser.driver.execute_script("return document.getElementsByClassName('nextPage')[0] == null")
+
+		if end or browser.driver.execute_script("return document.getElementsByClassName('nextPage')[0].getAttribute('disabled')") == "disabled":
 			break
 		else:
 			browser.driver.execute_script("document.getElementsByClassName('nextPage')[0].click()")
@@ -272,7 +274,8 @@ def main_pkm_full(x):
 		#gets links for the entire set
 		time.sleep(2)
 		links.extend(link_collector())
-		if browser.driver.execute_script("return document.getElementsByClassName('nextPage')[0].getAttribute('disabled')") == "disabled":
+		end = browser.driver.execute_script("return document.getElementsByClassName('nextPage')[0] == null")
+		if end or browser.driver.execute_script("return document.getElementsByClassName('nextPage')[0].getAttribute('disabled')") == "disabled":
 			break
 		else:
 			browser.driver.execute_script("document.getElementsByClassName('nextPage')[0].click()")

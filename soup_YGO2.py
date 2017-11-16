@@ -12,11 +12,11 @@ import sys
 
 
 def main(x, links=0):#batch
-    
-    
+
+
     if links != 0:
         urls = x
-    else: 
+    else:
         urls  = text_l(x)
     t_results = [['Name', 'ATK/DEF', 'Monster Type','Card Type', 'Set', 'Level', 'Attribute', 'Passcode', 'Card Text']]
     for i in range(0, len(urls)):
@@ -70,11 +70,11 @@ def none_remover(x):
             n[i] = [["Number %d was not found" % (i)]]
             none_c = none_c + 1
     print ("%d entries were not found." % (none_c))
-        
+
     return n
-        
-        
-    
+
+
+
 def soupmaker(x):#makes the soup
     url = x
     html = requests.get(url)
@@ -130,8 +130,8 @@ def thtd(x):
                 d[encoder(headers[i].text).translate(None, '\n')] = "None"
     print(d)
     return d_sort(d)#creates a list from dictionary and then removes non-list elements
-        
-        
+
+
 
 
 def d_sort(x):
@@ -144,7 +144,7 @@ def d_sort(x):
     l = d.keys()
     return n_l
 
-        
+
 def text_l(x):
     words = ''
     l = []
@@ -157,8 +157,8 @@ def text_l(x):
         print(l)
         return l
 
-        
-        
+
+
 def w_csv(x):#accepts lists of other lists, spits out CSV file
     csv_out = open('YGOfile1.csv', 'wb')
     mywriter = csv.writer(csv_out)
@@ -173,7 +173,7 @@ def csv_ext(x,n):#n is cell number/location within the list where the needed inf
         items = x[i]
         l.append(items[n])
     return l
-        
+
 
 
 def linkf(x):#takes link tag (MUST BE STRING) and extracts the link
@@ -200,7 +200,7 @@ def ygo_link_grab(x, card_name, cells=4):
             text_wc(links)
             return links
 
-if len(sys.argv) > 1:
+if __name__ == "__main__":
     if sys.argv[1] == '-b':
         main(sys.argv[2])
     elif sys.argv[1] == '-t':
