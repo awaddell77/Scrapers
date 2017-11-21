@@ -1,6 +1,6 @@
 #script for pricecharting images
 from soupclass8 import *
-import os
+import os, sys
 from Sel_session import *
 from linkf import linkF
 from Im_dwnld import *
@@ -20,7 +20,9 @@ class priceCharting:
         self.skippedLst = []
         self.timeout = 10
         self.timeoutToggle = True
+        self.nonJ = False
     def main(self, cats = [], fname = "vg_export.csv"):
+        self.games = []
         if not cats:
             self.getVGamesData()
         elif isinstance(cats, (str, int)): cats = [cats]
@@ -42,17 +44,19 @@ class priceCharting:
         self.browser = Sel_session("https://www.pricecharting.com/")
         self.browser.start()
         self.browser.driver.set_page_load_timeout(self.timeout)
-    def getVGamesData(self, cat = ""):
+    def getVGamesData(self, cat = "", limit = 0):
         self.catObj = Cat_dbase()
         self.catObj.set_proper_desc(True)
         if cat:
             products = self.catObj.query("SELECT id FROM products WHERE product_type_id = \"1125\" AND category_id = \"{0}\" AND photo_file_name IS null;".format(str(cat)))
+        elif self.nonJ:
+            products = self.catObj.query("SELECT id FROM products WHERE product_type_id = \"1125\" AND photo_file_name IS null AND category_id NOT IN (\"22334\", \"22335\",\"22336\",\"22377\");".format(str(cat)))
         else:
             products = self.catObj.query("SELECT id FROM products WHERE product_type_id = \"1125\" AND photo_file_name IS null;")
-        #remove limit after testing
-        for i in range(0, len(products)):
-
-            print("Processing", str(products[i][0]), "(#{0} out of {1})".format(i+1, len(products)))
+        if limit > 0: end = limit
+        else: end = len(products)
+        for i in range(0, end):
+            print("Processing", str(products[i][0]), "(#{0} out of {1})".format(i+1, end))
             self.games.append(self.catObj.get_product(products[i][0]))
         self.games.sort(key=sort1)
 
@@ -93,8 +97,18 @@ class priceCharting:
             if "no-image-available" not in imageLink:
                 fname = dLoader.d_img(imageLink, str(i["Product Id"]))
                 i["Product Image"] = fname
-                imageF = I_handling(tdir + fname)
-                imageF.resizeByFactor(2.5)
+
+                try:
+                    imageF = I_handling(tdir + fname)
+                    imageF.resizeByFactor(2.5)
+                except TypeError as TE:
+                    print("Type Error detected")
+                    i["Product Image"] = ""
+                except KeyboardInterrupt as KE:
+                    break
+                except:
+                    print("Error detected")
+                    print(sys.exc_info()[:])
 
             else:
                 i["Product Image"] = ""

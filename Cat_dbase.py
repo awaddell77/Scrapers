@@ -151,7 +151,10 @@ class Cat_dbase(Db_mngmnt):
 		return unique_items
 	def update_product(self, p_id, descr, value):
 		print("Updating Product {0} with {1}".format(p_id, value))
-		self.cust_com('UPDATE products SET {0} = \"{1}\" WHERE id = \"{2}\";'.format(descr, value, p_id))
+		if descr in ['barcode', 'asin'] and value.lower() == "null":
+			self.cust_com('UPDATE products SET {0} = null WHERE id = \"{1}\";'.format(descr, p_id))
+		else:
+			self.cust_com('UPDATE products SET {0} = \"{1}\" WHERE id = \"{2}\";'.format(descr, value, p_id))
 	def child_cats(self, parent_cat):
 		res = self.query("SELECT id FROM categories WHERE ancestry = \"188/{0}\"".format(str(parent_cat)))
 		if not res:
