@@ -158,6 +158,12 @@ if __name__ == "__main__":
 		test.dir = sys.argv[3]
 		test.h_var = True
 		test.main_auto()
+	elif sys.argv[1] == '-dm':
+		test = Coolstuff(sys.argv[2])
+		test.dir = sys.argv[3]
+		test.Dmvar = True
+		test.main_auto()
+
 	else:
 		test = Coolstuff(sys.argv[1])
 		test.dir = sys.argv[2]

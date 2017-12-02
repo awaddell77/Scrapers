@@ -21,10 +21,10 @@ class priceCharting:
         self.timeout = 10
         self.timeoutToggle = True
         self.nonJ = False
-    def main(self, cats = [], fname = "vg_export.csv"):
+    def main(self, cats = [], limit = 0, fname = "vg_export.csv"):
         self.games = []
         if not cats:
-            self.getVGamesData()
+            self.getVGamesData("", limit)
         elif isinstance(cats, (str, int)): cats = [cats]
         for i in cats:
             self.getVGamesData(i)
