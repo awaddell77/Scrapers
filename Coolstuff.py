@@ -56,18 +56,20 @@ class Coolstuff:
 			Im_dwnld(self.dir).i_main(d_links)
 
 		if self.Dmvar:
-			name = results[0][0].split(' - ')[0]
-			dmNlst.append(name)
+			#name = results[0][0].split(' - ')[0]
+			#dmNlst.append(name)
 
 			for i in range(0, len(results)-1):
-				if name not in dmNlst:
+				name = results[i][0].split(' - ')[0]
+				if name not in dmNlst and "Basic Action Card" not in results[i][0]:
 					print("{0} not in list".format(name))
 					new_name = name + " (Die Only)"
 					new_row = results[i][:]
 					new_row[0] = new_name
+					new_row[4] = "dicemasters.jpg"
 					dmDiceOnly.append(new_row)
 					dmNlst.append(name)
-				name = results[i+1][0].split(' - ')[0]
+				#name = results[i+1][0].split(' - ')[0]
 			r1 = copy.deepcopy(results)
 			results_final.extend(self.DmVariants(" (Card Only)", r1))
 			results_final.extend(self.DmVariants(" (Die and Card Combo)", r1))
@@ -107,6 +109,7 @@ class Coolstuff:
 		item.find('td', {'class':'vm description'}).find('span',{'itemprop':'name'}).decompose()
 		rarity = con_text_s(item.find('td', {'class':'vm description'}).find('h3'))
 		rarity = rarity.replace(', ', '')
+		rarity = rarity.strip(' ')
 		results = [name, rarity] + image_info
 		return results
 	def DmVariants(self, x, lst):
