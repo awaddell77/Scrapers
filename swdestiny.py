@@ -52,8 +52,12 @@ class SwDestiny:
         d = {"Force":"Blue","Command":"Red","Rogue":"Yellow","General":"Gray"}
         return d.get(x.strip(" "), x)
 #testing
-mInst = SwDestiny("LEG")
+'''mInst = SwDestiny("LEG")
 mInst.get_set()
-mInst.norm_data()
+mInst.norm_data()'''
+
 if __name__ == "__main__":
     mInst = SwDestiny(sys.argv[1])
+    mInst.get_set()
+    mInst.norm_data()
+    mInst.exportData()
