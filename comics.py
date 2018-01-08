@@ -14,18 +14,18 @@ class Comic:
 		self.r_data = ''
 		self.preview_data = ''
 		self.comic_data = []
-		self.genre_dict =  {'XX': '*No Genre* or *All Genre*', 'WR': 'War', 'YA': 'Yaoi', 'MS': 'Mystery', 
-		'HS': 'Historical', 'SN': 'Seasonal', 'RL': 'Religious', 'AS': 'Art Supplies', 'AD': 'Adult', 'TY': 'Toy Tie-In', 
-		'DR': 'Drama', 'GA': 'Gaming/Role Playing', 'PK': 'Pokémon', 'AN': 'Anthology', 'SP': 'Sports', 
-		'RO': 'Romance', 'LT': 'Literary', 'CR': 'Crime', 'HT': 'How to Draw', 'HO': 'Horror', 'KI': 'Kids', 
+		self.genre_dict =  {'XX': '*No Genre* or *All Genre*', 'WR': 'War', 'YA': 'Yaoi', 'MS': 'Mystery',
+		'HS': 'Historical', 'SN': 'Seasonal', 'RL': 'Religious', 'AS': 'Art Supplies', 'AD': 'Adult', 'TY': 'Toy Tie-In',
+		'DR': 'Drama', 'GA': 'Gaming/Role Playing', 'PK': 'Pokémon', 'AN': 'Anthology', 'SP': 'Sports',
+		'RO': 'Romance', 'LT': 'Literary', 'CR': 'Crime', 'HT': 'How to Draw', 'HO': 'Horror', 'KI': 'Kids',
 		'LG': 'Legend', 'RB': 'Reality-Based', 'WS': 'Western', 'FA': 'Fantasy', 'SF': 'Science Fiction', 'MV': 'Movie/TV Tie-In',
-		'SU': 'Surreal/Non-Linear', 'HA': 'Halloween', 'CJ': 'Comics Journalism','MU': 'Music', 'SH': 'Super-hero', 
-		'AA': 'Action/Adventure', 'RF': 'Reference/Art Books/How To', 'MA': 'Manga', 'HU': 'Humor/Comedy', 
+		'SU': 'Surreal/Non-Linear', 'HA': 'Halloween', 'CJ': 'Comics Journalism','MU': 'Music', 'SH': 'Super-hero',
+		'AA': 'Action/Adventure', 'RF': 'Reference/Art Books/How To', 'MA': 'Manga', 'HU': 'Humor/Comedy',
 		'DT': 'Designer Toys', 'PC': 'Pop Culture', 'AP': 'Anthropomorphics'}
-		self.cat_dict = {'15': 'Posters/Prints/Portfolios/Calendars', '4': 'Books - Science-Fiction/Horror/Novels', 
-		'11': 'Supplies - Card', '10': 'Toys and Models', '13': 'Retailers Sales Tools', '16': 'Video/Audio/Video Games', 
-		'6': 'Cards - Sports/Non-Sports', '1': 'Comics - Black & White/Color', '7': 'Novelties - Comic Material', 
-		'3': 'Books - Illustrated Comic Graphic Novels/Trade Paperbacks', '14': 'Diamond Publications', '12': 'Supplies - Comic', 
+		self.cat_dict = {'15': 'Posters/Prints/Portfolios/Calendars', '4': 'Books - Science-Fiction/Horror/Novels',
+		'11': 'Supplies - Card', '10': 'Toys and Models', '13': 'Retailers Sales Tools', '16': 'Video/Audio/Video Games',
+		'6': 'Cards - Sports/Non-Sports', '1': 'Comics - Black & White/Color', '7': 'Novelties - Comic Material',
+		'3': 'Books - Illustrated Comic Graphic Novels/Trade Paperbacks', '14': 'Diamond Publications', '12': 'Supplies - Comic',
 		'9': 'Apparel - T-shirts/Caps', '8': 'Novelties - Non-Comic Material', '5': 'Games', '2': 'Magazines - Comics/Games/Sports'}
 	def import_r_data(self):
 		csv_inst = R_csv(self.master)
@@ -52,7 +52,11 @@ class Comic:
 		old = self.r_data
 		new = []
 		for i in old:
-			if int(i.get("CATEGORY")) < 4:
+			try:
+				print(i)
+			except UnicodeEncodeError as UE:
+				print("Encountered error")
+			if int(i.get("CATEGORY", 9999)) < 4:
 				new.append(self.key_standard_s(i))
 		self.comic_data = new
 		return new
@@ -77,7 +81,7 @@ class Comic:
 		d["Ship Date"] = x.get("SHIP_DATE")
 		d["Genre"] = self.genre_trans(x.get("GENRE", ''))
 		d["Description"] = self.get_description(x.get("DIAMD_NO"))
-		d["Category"] = self.get_cat(x.get("CATEGORY"))
+		d["Category"] = self.get_cat(x.get("CATEGORY",''))
 		d["Page Count"] = x.get("PAGE")
 		d["Brand Code"] = x.get("BRAND_CODE")
 		d["Writer"] = x.get("WRITER")

@@ -85,6 +85,9 @@ class Sel_session(object):
             return False
         else:
             return True
+    def export_cookies(self):
+        return self.driver.get_cookies()
+
 class readyCall:
     def __init__(self, data = ''):
         self.data = data
