@@ -25,17 +25,20 @@ class R_csv:
 		return l
 	def dictionarify(self):
 		items = self.read_in()
-		#if headers is not an empty list it is inserted into the first row 
+		#if headers is not an empty list it is inserted into the first row
 		if self.__headers:
 			items.insert(0, self.__headers)
 		crit = items[0]
+		#if something is not showing up in the final file it's probably because its column does not have a header
 		results = []
 		for i in range(1, len(items)):
 			d = dict.fromkeys(crit, 0)
-			for i_2 in range(0, len(items[i])):
+			for i_2 in range(0, len(crit)):
+				try:
+					print(items[i])
+					print(items[i][i_2])
+				except UnicodeEncodeError as UE:
+					print("Unicode Error")
 				d[crit[i_2]] = items[i][i_2]
 			results.append(d)
 		return results
-
-
-		

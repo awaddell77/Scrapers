@@ -130,7 +130,7 @@ def links(x):
     return link_list
 
 def links_1(x):
-    if 'http://' in x:
+    if 'http://' or 'https://' in x:
         links_1 = [x]
     else:
         links_1 = S_IO(x).text_l()
