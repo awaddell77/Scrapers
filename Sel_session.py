@@ -3,15 +3,17 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from bs4 import BeautifulSoup as bs
 import lxml
 import time
 
 class Sel_session(object):
-    def __init__(self, url='http://www.fsf.org/', *args):
+    def __init__(self, url='http://www.fsf.org/', driver = 'C:\\Program Files\\Mozilla Firefox\\firefox.exe',*args):
         self.url = url
         self.args = args
-        self.driver = webdriver.Firefox()
+        self.binarypath = driver
+        self.driver = webdriver.Firefox(firefox_binary=binarypath)
         #if true timeout enables the load_cutoff method in go_to
         self.timeout = False
 

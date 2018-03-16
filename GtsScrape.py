@@ -16,12 +16,14 @@ class GtsScrape:
         self.results = []
         self.links = []
         self.pageFix = True
-        self.maxPage = '12'
+        self.maxPage = '480'
         self.masterCrits = set()
         self.lastExport = []
         self.dir = "GTS Images"
         self.fname = "gts-pos.csv"
         self.crits = ["Product Name", "Category", "Manufacturer SKU", "Manufacturer", "Image Link", "Product Image", "Barcode"]
+        self.dImageTog = False
+        self.failLst = []
     def main(self):
         self.results = []
         if not self.browser: self.startBrowser()
@@ -31,10 +33,14 @@ class GtsScrape:
             print("Working on {0} of {1}. ({2})".format(n, len(self.links), str(i)))
             try:
                 self.splitter(str(i))
-            except AttributeError as AE:
-                print("Enountered error, trying again")
-                time.sleep(5)
-                self.splitter(str(i))
+            except CouldNotLoad as CL:
+                print("Could not load page for {0}".format(str(i)))
+                n +=1
+                self.failLst.append(str(i))
+                continue
+                #print("Enountered error, trying again")
+                #time.sleep(5)
+                #self.splitter(str(i))
             n += 1
 
     def startBrowser(self):
@@ -50,11 +56,22 @@ class GtsScrape:
         links_r = prods.find_all('div', {'class':'prod-thumb'})
         links = [linkF(str(links_r[i].a), 'href=', 'https://www.gtsdistribution.com/') for i in range(0, len(links_r))]
         self.links = links
-    def splitter(self, url):
+    def splitter(self, url, tries = 0, tLimit = 2):
         d = {}
         self.goto(url)
         site = self.browser.source()
-        d["Product Name"] = site.find('div', {'class':'page-header detail-title'}).h1.text.replace('\n','')
+        try:
+            d["Product Name"] = site.find('div', {'class':'page-header detail-title'}).h1.text.replace('\n','')
+            table = site.find('div', {'class':'detail-info details'})
+            dTable = table.find_all('div', {'class':'title'})
+        except AttributeError as AE:
+            if tries > tLimit:
+                raise CouldNotLoad("Could not load page")
+            print("Attribute Error, trying again. Try #{0}".format(str(tries)))
+            tries += 1
+            self.splitter(url,tries)
+            return
+
         table = site.find('div', {'class':'detail-info details'})
         dTable = table.find_all('div', {'class':'title'})
         for i in range(0, len(dTable)):
@@ -65,9 +82,10 @@ class GtsScrape:
         elif image_link.find('a',{"id":'detail_large'}) is not None: image = linkF(str(image_link.find('a',{"id":'detail_large'})), 'href=',"https://www.gtsdistribution.com/")
         if "no-image" in image: image = linkF(str(image_link.find('a',{"id":'detail_large'})), 'src=',"https://www.gtsdistribution.com/")
         elif image_link.find('a',{"id":'detail_large'}) is None or "no-image.png" in image: image = linkF(str(image_link.find('img',{'id':'prodpicthumb'})), "src=","https://www.gtsdistribution.com/")
+        if "no-image" in image: image = ''
         d["Product Link"] = image
         d["Product Image"] = fn_grab(image)
-        if image:
+        if image and self.dImageTog:
             dloader = Im_dwnld(self.dir)
             dloader.i_main([image])
 
@@ -76,6 +94,7 @@ class GtsScrape:
         d["Catalog Category"] = catCategory.category
         self.addCrits(d)
         self.results.append(d)
+        return
     def addCrits(self, d):
         for i in list(d.keys()): self.masterCrits.add(i)
     def export(self):
@@ -106,15 +125,18 @@ class GtsScrape:
         else:
             return
 
+class CouldNotLoad(Exception):
+    #for when the product info page won't load
+    pass
 
 
 '''mInst = GtsScrape("https://www.gtsdistribution.com/pc_combined_results.asp?search_keyword=&range=preorder_date~[~2018-03-04~2018-03-10~]")
 mInst.startBrowser()
 time.sleep(3)
 mInst.getLinks()'''
-mInst = GtsScrape("https://www.gtsdistribution.com/pc_combined_results.asp?search_keyword=&range=preorder_date~[~2018-03-04~2018-03-10~]")
-mInst.maxPage = '12'
-mInst.main()
+#mInst = GtsScrape("https://www.gtsdistribution.com/pc_combined_results.asp?search_keyword=&range=preorder_date~[~2018-03-04~2018-03-10~]")
+#mInst.maxPage = '12'
+#mInst.main()
 
 if __name__ == "__main__":
     if sys.argv[1] == "-cdir":
@@ -122,12 +144,20 @@ if __name__ == "__main__":
         mInst.dir = sys.argv[3]
         mInst.main()
         mInst.export()
+        mInst.browser.close()
+        if mInst.failLst:
+            print("Failed to process the following {0} product:".format(len(mInst.failLst)))
+            for i in mInst.failLst: print(i)
+
+
     else:
         mInst = GtsScrape(sys.argv[1])
         mInst.main()
         mInst.export()
-    
-
+        mInst.browser.close()
+        if mInst.failLst:
+            print("Failed to process the following {0} product:".format(len(mInst.failLst)))
+            for i in mInst.failLst: print(i)
 
 
 
