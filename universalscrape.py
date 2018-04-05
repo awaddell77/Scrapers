@@ -1,8 +1,15 @@
 #for scraping from universaldist preorders (http://www.universaldist.com/pre-orders.aspx)
 from soupclass8 import *
 from UnivSelect import *
+from Sel_session import *
+import time
 def splitter(x, fname="universalscrape.csv"):
-	site = S_base(x).sel_soup()
+	#site = S_base(x).sel_soup()
+	browser = Sel_session(x, driver = 'C:\\Program Files\\Mozilla FirefoxSel\\firefox.exe')
+	browser.start()
+	time.sleep(3)
+	site = browser.source()
+	browser.close()
 	table = site.find('table',{'class':'productstable'}).tbody
 	rows = table.find_all('tr')
 	results = []

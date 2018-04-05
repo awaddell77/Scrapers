@@ -1,14 +1,17 @@
 #magic 
 #srapes a set page http://gatherer.wizards.com/Pages/Search/Default.aspx?set=[%22Duel%20Decks:%20Mind%20vs.%20Might%22]
 from soupclass8 import *
+
 import time
 class Magic_scrape:
 	def __init__(self, url):
 		self.url = url
 		self.session = Sel_session(url)
-		self.session.start()
 		self.cards = []
 		self.headers = ["Name", "Card Type", "Pow / Tgh", "Card Text", "Rarity", "Color", "Cost", "Image Link"]
+	def browser_start(self):
+		self.session.start()
+
 
 	def page_scrape(self):
 		card_table_rows = []
@@ -82,6 +85,25 @@ class Magic_scrape:
 		if image_r is not None:
 			d["Image Link"] = "http://gatherer.wizards.com/" + S_format(str(image_r)).linkf('src=').replace('../', '')
 		return d
+	def card_info(self,x):
+		d = {}
+		d["Color"] = ''
+		site = S_base(x).soupmaker()
+		cinfo = site.find('div', {'style':'margin-top: 5px;'})
+		rows = cinfo.find_all('div',{'class':'label'})
+		for i in range(0, len(rows)):
+			print(rows[i])
+			print('===================================================')
+			print(rows[i].find_next())
+			if 'Mana Cost' in rows[i].text and 'Converted' not in rows[i].text:
+				d[cleaner(rows[i].text, ['\n', '\r', '\t',':']).strip()] = self.mana_cost(rows[i].find_next())[0]
+				d["Color"] = self.mana_cost(rows[i].find_next())[1]
+			else:
+				d[cleaner(rows[i].text, ['\n', '\r', '\t',':']).strip()] = cleaner(rows[i].find_next().text, ['\n', '\r', '\t']).strip()
+		return d
+
+
+
 	def mana_cost(self, x):
 		colors = {'Green':'G', 'Red':'R', "Black":"B", "Blue":"U", "White":"W", "Colorless":"C", "Variable Colorless":"X"}
 		color = ''
@@ -120,7 +142,7 @@ class Magic_scrape:
 		#possibly redundant return statement
 		return (cost, self.color_trans(color))
 	def color_trans(self, x):
-		color_d = {'G':'Green', 'R':'Red', "B":"Black", "U":"Blue", "W":"White", "Colorless":"C", "Variable Colorless":"X", "Multi-Color":"Multi-Color"}
+		color_d = {'G':'Green', 'R':'Red', "B":"Black", "U":"Blue", "W":"White", "Colorless":"C", "Variable Colorless":"X", "Multi-Color":"Multi-Color",'':''}
 		return color_d[x]
 
 
@@ -178,6 +200,7 @@ class Magic_scrape:
 
 if __name__ == '__main__':
 	mag_inst = Magic_scrape(sys.argv[1])
+	mag_inst.browser_start()
 	mag_inst.page_scrape()
 	mag_inst.m_csv()
 	mag_inst.session.close()

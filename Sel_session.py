@@ -4,18 +4,23 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from selenium.webdriver.firefox.options import Options
 from bs4 import BeautifulSoup as bs
 import lxml
 import time
 
 class Sel_session(object):
-    def __init__(self, url='http://www.fsf.org/', driver = 'C:\\Program Files\\Mozilla Firefox\\firefox.exe',*args):
+    def __init__(self, url='http://www.fsf.org/', driver = 'C:\\Program Files\\Mozilla Firefox\\firefox.exe',**kwargs):
         self.url = url
-        self.args = args
-        self.binarypath = driver
-        self.driver = webdriver.Firefox(firefox_binary=binarypath)
-        #if true timeout enables the load_cutoff method in go_to
+        #self.args = args
+        self.binarypath = FirefoxBinary(driver)
+        self.opts = Options()
         self.timeout = False
+        if kwargs is not None:
+            if kwargs.get('headless','') and kwargs['headless']: self.opts.add('--headless')
+        self.driver = webdriver.Firefox(firefox_binary=self.binarypath, firefox_options=self.opts)
+        #if true timeout enables the load_cutoff method in go_to
+        
 
 
     def start(self):

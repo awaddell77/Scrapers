@@ -27,7 +27,8 @@ class GtsSelect(CatSelect):
             self.category = '2631'
             return
         elif 'ROLE PLAYING GAMES' in cat1:
-            self.category = self.rpgSelect()
+            #self.category = self.rpgSelect()
+            self.rpgSelect()
 
         elif 'TOYS AND FIGURES' in cat1 and "POP!" not in self.productName:
             self.category = '7433'

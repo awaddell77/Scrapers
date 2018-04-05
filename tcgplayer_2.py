@@ -2,7 +2,7 @@
 #optimized for new tcgplayer layout
 from soupclass8 import *
 from Im_dwnld import *
-
+from Sel_session import Sel_session as S_session
 
 
 browser = ''
@@ -343,7 +343,7 @@ if __name__ == "__main__":
 		#new, old
 		new_find(sys.argv[2], sys.argv[3])
 	else:
-		browser = Sel_session('http://www.tcgplayer.com/')
+		browser = S_session('http://www.tcgplayer.com/', driver = 'C:\\Program Files\\Mozilla FirefoxSel\\firefox.exe')
 		browser.start()
 		if sys.argv[1] == "-magic":
 			main_magic_full(sys.argv[2])
@@ -356,5 +356,5 @@ if __name__ == "__main__":
 		elif sys.argv[1] == '-ff':
 			main_ff_full(sys.argv[2])
 else:
-	browser = browser = Sel_session('http://www.tcgplayer.com/')
+	browser = S_session('http://www.tcgplayer.com/', driver = 'C:\\Program Files\\Mozilla FirefoxSel\\firefox.exe')
 	browser.start()

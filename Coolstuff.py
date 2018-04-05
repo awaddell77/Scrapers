@@ -19,7 +19,7 @@ class Coolstuff:
 
 	def main_auto(self):
 		url = self.url
-		site = Sel_session(url)
+		site = Sel_session(url, driver = 'C:\\Program Files\\Mozilla FirefoxSel\\firefox.exe')
 		site.start()
 		results = []
 		dmDiceOnly = []

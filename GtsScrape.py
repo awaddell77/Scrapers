@@ -44,7 +44,7 @@ class GtsScrape:
             n += 1
 
     def startBrowser(self):
-        self.browser = Sel_session("https://www.gtsdistribution.com/")
+        self.browser = Sel_session("https://www.gtsdistribution.com/","C:\\Program Files\\Mozilla FirefoxGTS\\firefox.exe")
         self.browser.start()
     def getLinks(self):
         url = self.url
@@ -75,7 +75,7 @@ class GtsScrape:
         table = site.find('div', {'class':'detail-info details'})
         dTable = table.find_all('div', {'class':'title'})
         for i in range(0, len(dTable)):
-            d[cleaner(dTable[i].text, ['\n','\t']).strip()] = cleaner(dTable[i].findNext().text, ["\n", "\t", "\r", "\xa0", "&nbsp;"])
+            d[cleaner(dTable[i].text, ['\n','\t']).strip()] = cleaner(dTable[i].findNext().text, ["\n", "\t", "\r", "\xa0", "&nbsp;"]).title().replace("'S","'s")
         image_link = site.find('div', {'class':"detail-img-container"})
         image = ''
         if image_link is None: d["Product Image"] = ''
@@ -85,12 +85,13 @@ class GtsScrape:
         if "no-image" in image: image = ''
         d["Product Link"] = image
         d["Product Image"] = fn_grab(image)
+        if d.get("UPC EACH:",""): d["UPC EACH:"] = "@"+str(d["UPC EACH:"]).strip()
         if image and self.dImageTog:
             dloader = Im_dwnld(self.dir)
             dloader.i_main([image])
 
-        catCategory = GtsSelect(d["Product Name"], d.get("Manufacturer:", 'N/A'))
-        catCategory.select(d["Category:"])
+        catCategory = GtsSelect(d["Product Name"], d.get("Manufacturer:", 'N/A').upper())
+        catCategory.select(d["Category:"].upper())
         d["Catalog Category"] = catCategory.category
         self.addCrits(d)
         self.results.append(d)
