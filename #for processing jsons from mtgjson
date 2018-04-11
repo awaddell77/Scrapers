@@ -1,2 +1,0 @@
-#for processing jsons from mtgjson
-from loadJson import *
