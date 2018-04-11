@@ -101,12 +101,14 @@ class Comic:
 
 	def p_name_fix(self, x):
 		#takes dict, if product name is already in catalog it adds diamond number to the name
-		if self.cat_obj.is_in_cat("name", x["Product Name"], '2575'):
+		if self.cat_obj.is_in_cat("name", self.quote_escape(x["Product Name"]), '2575'):
 			#print("FOUND DUPLICATE")
 			new_name = x["Product Name"] + " (" + x.get("DIAMD NO", str(time.localtime()[0])) + ")"
 			return new_name
 		else:
 			return x["Product Name"]
+	def quote_escape(self, x):
+		return x.replace("\"", "\\\"")
 	def get_description(self, x):
 		for i in self.preview_data:
 			if i["DIAMD_NO"] == x:
@@ -139,17 +141,11 @@ class Comic:
 	def dwnld_image(self, x):
 		new_s = ''
 		for i in x:
-			if i.isdigit():
-				new_s += i
+			if i.isdigit(): new_s += i
 		start, end = self.comic_image_format(new_s)
-		if 'STK' in x:
-			prefix =  'STK'
-		else:
-			prefix = 'STL'
-
-
+		if 'STK' in x: refix =  'STK'
+		else: prefix = 'STL'
 		url = "http://www.previewsworld.com/catalogimages/STK_IMAGES/{3}{1}-{2}/{0}.jpg".format(x, str(self.zero_lead(start)), str(self.zero_lead(end)), prefix)
-
 		return url
 
 
@@ -165,7 +161,7 @@ class Comic:
 		num = int(x)
 		for i in range(1, num, 20000):
 			if i + 20000 >= num:
-				print("Found interval: It is {0} - {1}".format(i, i+19999))
+				#print("Found interval: It is {0} - {1}".format(i, i+19999))
 				return i, i+19999
 
 if __name__ == "__main__":
