@@ -56,6 +56,8 @@ def check_element(x, attr, attr_v=''):
 if __name__ == '__main__':
 	if sys.argv[1] == '-lw':
 		splitter('https://www.universaldist.com/pre-orders.aspx?Command=LastWeek', sys.argv[2])
+	elif sys.argv[1] == '-all':
+		splitter('http://www.universaldist.com/pre-orders.aspx?Command=All', sys.argv[2])
 	else:
 		splitter('http://www.universaldist.com/pre-orders.aspx', sys.argv[1])
 
