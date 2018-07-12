@@ -56,3 +56,4 @@ TESTING AGD/1png
 geckodriver.log
 AllSets.json
 #for processing jsons from mtgjson
+*.xlsx
